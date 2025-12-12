@@ -1,0 +1,10 @@
+body{
+    background-color: #f9f9f9;
+}
+
+header {
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  z-index: 99;
+}
