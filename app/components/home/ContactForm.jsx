@@ -64,9 +64,9 @@ export const ContactForm = ({ serviceTitle, onClose }) => {
     setLoading(true);
 
     // Split name into firstName and lastName
-    const nameParts = formData.name.trim().split(' ');
-    const firstName = nameParts[0] || '';
-    const lastName = nameParts.slice(1).join(' ') || '';
+    const nameParts = formData.name.trim().split(" ");
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ") || "";
 
     const payload = {
       firstName,
@@ -74,27 +74,36 @@ export const ContactForm = ({ serviceTitle, onClose }) => {
       email: formData.email,
       phone: formData.mobile,
       inquiryType: serviceTitle || "General Inquiry",
-      site: "NextGen Consultancy - Service Inquiry"
+      site: "NextGen Consultancy - Service Inquiry",
     };
 
     try {
       console.log("📤 Sending form data:", payload);
 
-      const res = await fetch("https://resend-mail-worker.vatsal-9e7.workers.dev/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        "https://resend-mail-worker.vatsal-9e7.workers.dev/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const data = await res.json();
 
       if (res.ok) {
-        setAlert({ type: "success", message: "Form submitted successfully ✅" });
+        setAlert({
+          type: "success",
+          message: "Form submitted successfully ✅",
+        });
         setFormData({ name: "", email: "", mobile: "", company: "" });
         setErrors({});
         onClose?.(); // close modal if passed
       } else {
-        setAlert({ type: "error", message: data.error || "Something went wrong" });
+        setAlert({
+          type: "error",
+          message: data.error || "Something went wrong",
+        });
       }
     } catch (error) {
       console.error("❌ Error submitting form:", error);
@@ -136,7 +145,9 @@ export const ContactForm = ({ serviceTitle, onClose }) => {
             } text-[#334155] shadow-sm`}
             placeholder="Full Name *"
           />
-          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+          {errors.name && (
+            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+          )}
         </div>
 
         {/* Mobile */}
@@ -154,7 +165,9 @@ export const ContactForm = ({ serviceTitle, onClose }) => {
             } text-[#334155] shadow-sm`}
             placeholder="Mobile No. *"
           />
-          {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
+          {errors.mobile && (
+            <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>
+          )}
         </div>
 
         {/* Company */}
@@ -185,7 +198,9 @@ export const ContactForm = ({ serviceTitle, onClose }) => {
             } text-[#334155] shadow-sm`}
             placeholder="Email Address *"
           />
-          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          )}
         </div>
 
         {/* Submit Button */}

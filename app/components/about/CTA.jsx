@@ -14,10 +14,10 @@ export default function CTAProfessionalDark() {
       setError("⚠️ Please enter your email!");
       return;
     }
-    
+
     setLoading(true);
     setError("");
-    
+
     try {
       const payload = {
         firstName: "",
@@ -25,22 +25,25 @@ export default function CTAProfessionalDark() {
         email: email,
         phone: "",
         inquiryType: "Newsletter/CTA",
-        site: "NextGen Consultancy - About Page"
+        site: "NextGen Consultancy - About Page",
       };
 
-      const response = await fetch('https://resend-mail-worker.vatsal-9e7.workers.dev/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      
+      const response = await fetch(
+        "https://resend-mail-worker.vatsal-9e7.workers.dev/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+
       const result = await response.json();
       if (response.ok) {
         setSubmitted(true);
         setEmail("");
         setTimeout(() => setSubmitted(false), 3000);
       } else {
-        throw new Error(result.error || 'Server error');
+        throw new Error(result.error || "Server error");
       }
     } catch (error) {
       console.error(error);
@@ -51,23 +54,27 @@ export default function CTAProfessionalDark() {
   };
 
   return (
-    <section className="w-full py-16 flex justify-center items-center bg-[#ebf2f8]">
+    <section className="w-full py-16 flex justify-center items-center bg-white">
       {/* CTA Card */}
       <div className="relative flex flex-col lg:flex-row items-center justify-between max-w-7xl w-full mx-4 lg:mx-8 bg-gradient-to-r from-[#05325f] to-[#5b93ca] rounded-3xl shadow-2xl overflow-hidden border border-[#245586] px-8 lg:px-12 py-10 lg:py-8">
-
         {/* Left Side: Text Content */}
         <div className="flex-1 lg:pr-8 mb-6 lg:mb-0">
           <h2 className="text-3xl lg:text-4xl font-bold leading-tight text-white">
-            Unlock <span className="text-[#a8c8e8]">Growth Potential</span> Today
+            Unlock <span className="text-[#a8c8e8]">Growth Potential</span>{" "}
+            Today
           </h2>
           <p className="text-gray-200 text-base lg:text-sm mt-3 leading-relaxed">
-            Enter your email to schedule your free consultancy session. Elevate your business with professional strategies.
+            Enter your email to schedule your free consultancy session. Elevate
+            your business with professional strategies.
           </p>
         </div>
 
         {/* Right Side: Form */}
         <div className="flex-1 lg:flex-none lg:min-w-[480px]">
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 w-full">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col sm:flex-row gap-3 w-full"
+          >
             <input
               type="email"
               placeholder="Enter your email"
@@ -101,10 +108,18 @@ export default function CTAProfessionalDark() {
 
       <style jsx>{`
         @keyframes fadeIn {
-          0% { opacity: 0; transform: translateY(-5px); }
-          100% { opacity: 1; transform: translateY(0); }
+          0% {
+            opacity: 0;
+            transform: translateY(-5px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
-        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out forwards;
+        }
       `}</style>
     </section>
   );

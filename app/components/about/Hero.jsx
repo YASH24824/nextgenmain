@@ -22,7 +22,6 @@ export default function Hero() {
 
       {/* Content Container */}
       <div className="relative flex flex-col lg:flex-row items-center justify-between px-6 md:px-8 py-10 md:py-0 gap-10 lg:gap-12 w-full max-w-[1200px] mx-auto">
-        
         {/* Text Section */}
         <div className="flex flex-col gap-6 flex-1 z-10 w-full lg:w-1/2">
           {/* Dynamic split headline */}
@@ -34,11 +33,16 @@ export default function Hero() {
                 </span>
               </span>
               <span className="block text-[44px] md:text-[50px] lg:text-[52px] font-black mt-1">
-                <span className="text-transparent bg-clip-text bg-[#5b93ca]">Business</span>{" "}
+                <span className="text-transparent bg-clip-text bg-[#5b93ca]">
+                  Business
+                </span>
                 <span className="relative">Dreams</span>
               </span>
               <span className="block text-[44px] md:text-[50px] lg:text-[52px] font-black mt-1">
-                Into <span className="italic font-black text-transparent bg-clip-text bg-[#5b93ca]">Reality</span>
+                Into
+                <span className="italic font-black text-transparent bg-clip-text bg-[#5b93ca]">
+                  Reality
+                </span>
               </span>
             </h1>
 
@@ -55,7 +59,9 @@ export default function Hero() {
 
           {/* Description */}
           <p className="text-white text-base md:text-lg leading-[1.75] text-center lg:text-left max-w-[530px] mx-auto lg:mx-0">
-            Revolutionizing consultancy with breakthrough AI technology. We transform visionary ideas into tangible success stories that reshape industries.
+            Revolutionizing consultancy with breakthrough AI technology. We
+            transform visionary ideas into tangible success stories that reshape
+            industries.
           </p>
 
           {/* Dual action buttons */}
@@ -67,8 +73,18 @@ export default function Hero() {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               <span className="relative z-10 text-white font-bold flex items-center gap-2.5 drop-shadow-lg">
                 Begin Journey
-                <svg className="w-5 h-5 transform group-hover:translate-x-2 group-hover:scale-110 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5 transform group-hover:translate-x-2 group-hover:scale-110 transition-all duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </span>
             </a>
@@ -80,8 +96,18 @@ export default function Hero() {
               <span className="text-[#245586] font-bold flex items-center gap-2.5">
                 View Services
                 <div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#245586] text-white transform group-hover:rotate-90 transition-transform duration-500">
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
+                  <svg
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={3}
+                      d="M12 4v16m8-8H4"
+                    />
                   </svg>
                 </div>
               </span>

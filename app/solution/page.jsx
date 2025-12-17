@@ -2,24 +2,29 @@ import Image from "next/image";
 import Hero from "../components/solution/Hero";
 import { Header } from "../components/Header";
 import Support from "../components/solution/Support";
-import { HotServicesSection } from "../components/solution/HotServicesSection";
+import { HotServicesSection } from "../components/HotServicesSection";
 import FAQ from "../components/solution/FAQ";
 import CTA from "../components/solution/CTA";
 import Footer from "../components/Footer";
 import "./page.css";
-import Script from "next/script"; // ✅ Import Next.js Script
+import Script from "next/script";
 
 export const metadata = {
   title: "NextGen Services | Compliance, Funding & Growth for Startups & MSMEs",
   description:
     "From registrations to investor access – NextGen Business Consultancy services help businesses grow faster and stay compliant.",
-     alternates: {
+  alternates: {
     canonical: "https://www.nextgenbusiness.co.in/solution",
   },
 
-  // Open Graph (Facebook, LinkedIn, WhatsApp, Slack, etc.)
+  robots: {
+    index: true,
+    follow: true,
+  },
+
   openGraph: {
-    title: "NextGen Services | From Compliance to Digital Marketing & Expansion",
+    title:
+      "NextGen Services | From Compliance to Digital Marketing & Expansion",
     description:
       "NextGen Business Consultancy offers tailored services to empower startups & MSMEs with funding, compliance, and digital growth.",
     url: "https://www.nextgenbusiness.co.in/solution",
@@ -28,7 +33,7 @@ export const metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.nextgenbusiness.co.in/og-image-solution.jpg", // Services page OG image
+        url: "https://www.nextgenbusiness.co.in/og-image-solution.jpg",
         width: 1200,
         height: 630,
         alt: "NextGen Consultancy - Services",
@@ -36,21 +41,42 @@ export const metadata = {
     ],
   },
 
-  // Twitter (Twitter/X)
   twitter: {
     card: "summary_large_image",
-    title: "NextGen Services | From Compliance to Digital Marketing & Expansion",
+    title:
+      "NextGen Services | From Compliance to Digital Marketing & Expansion",
     description:
       "NextGen Business Consultancy offers tailored services to empower startups & MSMEs with funding, compliance, and digital growth.",
     images: ["https://www.nextgenbusiness.co.in/og-image-solution.jpg"],
-    creator: "@NextGenBiz", // optional
+    creator: "@NextGenBiz",
   },
 };
 
 export default function Solution() {
-   const faqSchema = {
-    "@context": "https://schema.org/",
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "@id": "https://www.nextgenbusiness.co.in/solution#breadcrumb",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://www.nextgenbusiness.co.in/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Services",
+        item: "https://www.nextgenbusiness.co.in/solution",
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
     "@type": "FAQPage",
+    "@id": "https://www.nextgenbusiness.co.in/solution#faqpage",
     mainEntity: [
       {
         "@type": "Question",
@@ -81,7 +107,7 @@ export default function Solution() {
         name: "How does your consultancy stand out?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "We don’t just advise; we co-create, building businesses like co-founders, not outside consultants.",
+          text: "We don't just advise; we co-create, building businesses like co-founders, not outside consultants.",
         },
       },
       {
@@ -102,14 +128,97 @@ export default function Solution() {
       },
     ],
   };
+
+  // Optional: Add a Service schema for better rich results
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": "https://www.nextgenbusiness.co.in/solution#service",
+    name: "Business Consultancy Services",
+    description:
+      "Comprehensive business consultancy services including Startup India Registration, MSME Registration, Tax Exemptions, Funding Support, and Compliance Management.",
+    provider: {
+      "@type": "ProfessionalService",
+      "@id": "https://www.nextgenbusiness.co.in/#professionalservice",
+    },
+    serviceType: [
+      "Business Consulting",
+      "Startup Registration",
+      "MSME Registration",
+      "Tax Consultation",
+      "Funding Assistance",
+    ],
+    areaServed: {
+      "@type": "Country",
+      name: "India",
+    },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Our Services",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Startup India Registration",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "MSME Registration",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Tax Exemption Services",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Investor Connection",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Business Compliance",
+          },
+        },
+      ],
+    },
+  };
+
   return (
     <>
-     {/* ✅ Inject JSON-LD Schema using Next.js Script */}
+      {/* ✅ Breadcrumb Schema - Helps with site navigation in search results */}
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
+      {/* ✅ FAQ Schema - For FAQ rich results */}
       <Script
         id="faq-schema"
         type="application/ld+json"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
+      {/* ✅ Optional: Service Schema - For service-related rich results */}
+      <Script
+        id="service-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
       />
 
       <Header />

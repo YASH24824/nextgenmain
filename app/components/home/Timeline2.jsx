@@ -91,7 +91,7 @@ export default function Timeline2() {
                 {/* Text Content */}
                 <div className="flex flex-col ">
                   <h3
-                    className={`font-semibold Vietnam-font  font-semibold text-[#264c92] text-[19.58px] md:text-[28.6px] leading-normal `}
+                    className={`font-semibold Vietnam-font text-[#264c92] text-[19.58px] md:text-[28.6px] leading-normal `}
                   >
                     {step.title}
                   </h3>

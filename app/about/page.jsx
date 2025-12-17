@@ -1,20 +1,26 @@
 import Hero from "../components/about/Hero";
-import { Header } from "../components/Header";
 import Services from "../components/about/Services";
 import Timeline from "../components/about/Timeline";
 import Values from "../components/about/Values";
 import Process from "../components/about/Process";
 import Impact from "../components/about/Impact";
 import CTA from "../components/about/CTA";
-import Footer from "../components/Footer";
+import FestivalCelebrationSection from "../components/about/FestivalCelebrationSection";
+import TeamHierarchySection from "../components/about/TeamHierarchySection";
+
 import "./page.css";
 
 export const metadata = {
   title: "NextGen Consultancy India | Trusted Startup Growth Partner",
   description:
     "Learn how NextGen Consultancy supports entrepreneurs with Startup India certification, MSME compliance, and strategic business growth.",
-    alternates: {
+  alternates: {
     canonical: "https://www.nextgenbusiness.co.in/about",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
   },
 
   // Open Graph (Facebook, LinkedIn, WhatsApp, Slack, etc.)
@@ -43,22 +49,21 @@ export const metadata = {
     description:
       "From registration to business expansion, NextGen Business Consultancy enables founders to focus on growth while we handle the rest.",
     images: ["https://www.nextgenbusiness.co.in/og-image-about.jpg"],
-    creator: "@NextGenBiz", // optional
   },
 };
 
 export default function About() {
   return (
     <>
-      <Header />
       <Hero />
-      <Services />
+      <FestivalCelebrationSection />
+      {/* <Services /> */}
       <Timeline />
       <Values />
       <Process />
       <Impact />
+      {/* <TeamHierarchySection /> */}
       <CTA />
-      <Footer />
     </>
   );
 }

@@ -11,14 +11,23 @@ export const metadata = {
   description:
     "Contact NextGen Business Consultancy today – from compliance to growth strategies, we handle everything so you focus on your business",
 
+  alternates: {
+    canonical: "https://www.nextgenbusiness.co.in/contact",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+
   // Open Graph (Facebook, LinkedIn, WhatsApp, Slack, etc.)
   openGraph: {
     title: "Get in Touch | Expert Business Support at NextGen Consultancy",
     description:
       "Reach out to NextGen Business Consultancy for registration, compliance, funding, and growth support for your startup or MSME.",
-       alternates: {
-    canonical: "https://www.nextgenbusiness.co.in/contact",
-  },
+    alternates: {
+      canonical: "https://www.nextgenbusiness.co.in/contact",
+    },
     url: "https://www.nextgenbusiness.co.in/contact",
     siteName: "NextGen Business Consultancy",
     locale: "en_IN",

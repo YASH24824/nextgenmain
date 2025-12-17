@@ -50,7 +50,12 @@ const itemUp = {
     y: 30 * dir,
     scale: 0.98,
   }),
-  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.7, ease: "easeOut" } },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
 };
 
 // Tilt helper
@@ -84,7 +89,9 @@ function TiltCardWrapper({ children, className = "", onMouseFactor = 12 }) {
   };
 
   const transformStyle = {
-    transform: `perspective(900px) rotateX(${ty.toFixed(2)}deg) rotateY(${tx.toFixed(2)}deg) translateZ(0)`,
+    transform: `perspective(900px) rotateX(${ty.toFixed(
+      2
+    )}deg) rotateY(${tx.toFixed(2)}deg) translateZ(0)`,
     willChange: "transform",
   };
 
@@ -172,8 +179,12 @@ function GlassTextCard({ title, text, i, dir = 1 }) {
           }}
         >
           <div style={{ position: "relative", zIndex: 2 }}>
-            <h3 className="text-lg font-semibold text-center text-[#12345a] mb-2">{title}</h3>
-            <p className="text-sm text-[#445569] max-w-xs text-center">{text}</p>
+            <h3 className="text-lg font-semibold text-center text-[#12345a] mb-2">
+              {title}
+            </h3>
+            <p className="text-sm text-[#445569] max-w-xs text-center">
+              {text}
+            </p>
           </div>
         </div>
       </TiltCardWrapper>
@@ -233,8 +244,11 @@ export default function Services() {
     <section className="w-full px-6 py-16 md:py-20 bg-gradient-to-b from-[#f6fbff] to-[#ffffff] font-inter">
       <div className="max-w-6xl mx-auto text-center">
         {/* header */}
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+        >
           <motion.h2
             className="text-4xl md:text-5xl font-bold text-[#1c4268] mt-4 relative inline-block cursor-pointer group"
             initial={{ opacity: 0, y: 20 }}
@@ -245,7 +259,8 @@ export default function Services() {
             <span className="absolute left-0 -bottom-3 h-1 bg-[#245586] w-0 transition-all duration-500 group-hover:w-full"></span>
           </motion.h2>
           <p className="text-gray-600 md:text-lg max-w-3xl mx-auto leading-relaxed mt-8">
-            At NextGen, we don&apos;t just work &mdash; we innovate, evolve, and shape a culture where every moment drives purpose and progress.
+            At NextGen, we don&apos;t just work &mdash; we innovate, evolve, and
+            shape a culture where every moment drives purpose and progress.
           </p>
         </motion.div>
 
@@ -258,17 +273,32 @@ export default function Services() {
           className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12"
         >
           {/* row 1 */}
-          <GlassTextCard title={textCards[0].title} text={textCards[0].text} i={0} dir={1} />
+          <GlassTextCard
+            title={textCards[0].title}
+            text={textCards[0].text}
+            i={0}
+            dir={1}
+          />
           <GlassImageCard src={imageCards[0]} alt="img-1" i={1} />
           <GlassImageCard src={imageCards[1]} alt="img-2" i={2} />
 
           {/* row 2 */}
           <GlassImageCard src={imageCards[2]} alt="img-3" i={3} />
           <GlassImageCard src={imageCards[3]} alt="img-4" i={4} />
-          <GlassTextCard title={textCards[1].title} text={textCards[1].text} i={5} dir={-1} />
+          <GlassTextCard
+            title={textCards[1].title}
+            text={textCards[1].text}
+            i={5}
+            dir={-1}
+          />
 
           {/* row 3 */}
-          <GlassTextCard title={textCards[2].title} text={textCards[2].text} i={6} dir={1} />
+          <GlassTextCard
+            title={textCards[2].title}
+            text={textCards[2].text}
+            i={6}
+            dir={1}
+          />
           <GlassImageCard src={imageCards[4]} alt="img-5" i={7} />
           <GlassImageCard src={imageCards[5]} alt="img-6" i={8} />
         </motion.div>
@@ -276,7 +306,12 @@ export default function Services() {
         {/* features (last 4 cards in one row) */}
         <div className="mt-16 flex flex-wrap md:flex-nowrap justify-center gap-6">
           {features.map((f, idx) => (
-            <FeatureCard key={idx} number={idx + 1} title={f.title} description={f.description} />
+            <FeatureCard
+              key={idx}
+              number={idx + 1}
+              title={f.title}
+              description={f.description}
+            />
           ))}
         </div>
       </div>

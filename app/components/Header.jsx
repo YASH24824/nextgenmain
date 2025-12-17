@@ -5,7 +5,6 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
@@ -26,8 +25,9 @@ export const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 bg-[#1c4268] transition-all duration-300 ${scrolled ? "shadow-md rounded-full mt-2" : ""
-        }`}
+      className={`fixed top-0 left-0 w-full z-50 bg-[#1c4268] transition-all duration-300 ${
+        scrolled ? "shadow-md rounded-full mt-2" : ""
+      }`}
     >
       <div className="flex items-center justify-between h-20 px-6 sm:px-10 lg:px-20">
         {/* Logo */}
@@ -81,15 +81,13 @@ export const Header = () => {
               </button>
 
               <div
-                className={`absolute left-0 top-full mt-0 w-40 text-white rounded-md transition-all duration-200 ${isMoreOpen
-                  ? "opacity-100 visible translate-y-0"
-                  : "opacity-0 invisible -translate-y-1"
-                  }`}
+                className={`absolute left-0 top-full mt-0 w-40 text-white rounded-md transition-all duration-200 ${
+                  isMoreOpen
+                    ? "opacity-100 visible translate-y-0"
+                    : "opacity-0 invisible -translate-y-1"
+                }`}
               >
-                <a
-                  href="/blog"
-                  className="block px-4 py-2 text-sm"
-                >
+                <a href="/blog" className="block px-4 py-2 text-sm">
                   Blog
                 </a>
               </div>
@@ -122,7 +120,11 @@ export const Header = () => {
             onClick={() => setIsMobileMenuOpen((s) => !s)}
             className="md:hidden p-2 text-white"
           >
-            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </button>
         </div>
       </div>
@@ -137,8 +139,9 @@ export const Header = () => {
 
       {/* Mobile Drawer */}
       <div
-        className={`md:hidden fixed top-0 right-0 h-full w-72 bg-gradient-to-r from-[#1e4976] to-[#4a7ba7] z-50 transform transition-transform duration-300 ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={`md:hidden fixed top-0 right-0 h-full w-72 bg-gradient-to-r from-[#1e4976] to-[#4a7ba7] z-50 transform transition-transform duration-300 ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         <div className="p-5 relative">
           <button

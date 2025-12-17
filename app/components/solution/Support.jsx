@@ -239,9 +239,9 @@ import Seed from "../../assets/seed.png";
 import RKVY from "../../assets/rkvy.webp";
 import NAIFF from "../../assets/naiff.jpg";
 import PMEGP from "../../assets/pmegp.webp";
-import CGTMSE from "../../assets/cgtmse.jpg"
-import Mudra from "../../assets/mudra.png"
-import SeedSupport from "../../assets/seed-support.png"
+import CGTMSE from "../../assets/cgtmse.jpg";
+import Mudra from "../../assets/mudra.png";
+import SeedSupport from "../../assets/seed-support.png";
 import Project from "../../assets/project.webp";
 import VentureCapital from "../../assets/venture-capital.png";
 import Image from "next/image";
@@ -266,28 +266,32 @@ function Support() {
     {
       title: "Private Limited Company",
       slug: "private-limited-company",
-      description: "A Private Limited Company is a privately held business entity with limited liability protection. It's the most preferred structure for startups and growing businesses, offering legal separation between owners and the company, making it an independent legal entity.",
+      description:
+        "A Private Limited Company is a privately held business entity with limited liability protection. It's the most preferred structure for startups and growing businesses, offering legal separation between owners and the company, making it an independent legal entity.",
       category: "registration",
       image: Private,
     },
     {
       title: "Limited Liability Partnership",
       slug: "limited-liability-partnership",
-      description: "A Limited Liability Partnership combines the benefits of a partnership and a company. It provides limited liability protection to partners while maintaining the flexibility of a partnership structure. Ideal for professional services and small to medium businesses.",
+      description:
+        "A Limited Liability Partnership combines the benefits of a partnership and a company. It provides limited liability protection to partners while maintaining the flexibility of a partnership structure. Ideal for professional services and small to medium businesses.",
       category: "registration",
       image: LLP,
     },
     {
       title: "One Person Company (OPC)",
       slug: "one-person-company",
-      description: "One Person Company is a business structure where a single individual can form a company with limited liability. It's perfect for solo entrepreneurs who want the benefits of a private limited company without multiple directors or shareholders.",
+      description:
+        "One Person Company is a business structure where a single individual can form a company with limited liability. It's perfect for solo entrepreneurs who want the benefits of a private limited company without multiple directors or shareholders.",
       category: "registration",
       image: OPC,
     },
     {
       title: "Registered Partnership",
       slug: "registered-partnership",
-      description: "A Registered Partnership is formed when two or more persons come together to carry on business and share profits. Registration with the Registrar of Firms provides legal recognition and protection under the Indian Partnership Act, 1932.",
+      description:
+        "A Registered Partnership is formed when two or more persons come together to carry on business and share profits. Registration with the Registrar of Firms provides legal recognition and protection under the Indian Partnership Act, 1932.",
       category: "registration",
       image: Registered,
     },
@@ -297,108 +301,123 @@ function Support() {
     {
       title: "GST Certificate",
       slug: "gst-certificate",
-      description: "Goods and Services Tax (GST) registration is mandatory for businesses with turnover exceeding ₹40 lakhs (₹20 lakhs for services). It's a unique identification number for businesses to collect tax on behalf of the government and provides legal recognition for interstate trade.",
+      description:
+        "Goods and Services Tax (GST) registration is mandatory for businesses with turnover exceeding ₹40 lakhs (₹20 lakhs for services). It's a unique identification number for businesses to collect tax on behalf of the government and provides legal recognition for interstate trade.",
       category: "compliance",
       image: GST,
     },
     {
       title: "Company Compliances",
       slug: "company-compliances",
-      description: "Company compliances are mandatory statutory requirements that every registered company must fulfill as per the Companies Act, 2013 and other regulations. These include annual filings, board meetings, AGMs, tax returns, and various regulatory submissions to maintain active and legal status.",
+      description:
+        "Company compliances are mandatory statutory requirements that every registered company must fulfill as per the Companies Act, 2013 and other regulations. These include annual filings, board meetings, AGMs, tax returns, and various regulatory submissions to maintain active and legal status.",
       category: "compliance",
       image: Compliance,
     },
     {
       title: "Startup India Certificate",
       slug: "startup-india-certificate",
-      description: "Startup India Certificate is a recognition provided by DPIIT (Department for Promotion of Industry and Internal Trade) to innovative startups. This certification unlocks numerous benefits including tax exemptions, easier compliance, IPR benefits, and access to government funding programs.",
+      description:
+        "Startup India Certificate is a recognition provided by DPIIT (Department for Promotion of Industry and Internal Trade) to innovative startups. This certification unlocks numerous benefits including tax exemptions, easier compliance, IPR benefits, and access to government funding programs.",
       category: "compliance",
       image: Startup,
     },
     {
       title: "Udyam Certificate/MSME",
       slug: "udyam-certificate-msme",
-      description: "Udyam Registration (formerly Udyog Aadhaar) is a government recognition for Micro, Small & Medium Enterprises (MSMEs). It's a completely online, paperless process that provides a unique identification number and unlocks numerous benefits including priority sector lending, subsidies, and government scheme access.",
+      description:
+        "Udyam Registration (formerly Udyog Aadhaar) is a government recognition for Micro, Small & Medium Enterprises (MSMEs). It's a completely online, paperless process that provides a unique identification number and unlocks numerous benefits including priority sector lending, subsidies, and government scheme access.",
       category: "compliance",
       image: MSME,
     },
     {
       title: "Import Export Code",
       slug: "import-export-code",
-      description: "Import Export Code (IEC) is a 10-digit unique identification number mandatory for any business wanting to import or export goods and services from India. Issued by DGFT (Directorate General of Foreign Trade), it's a lifetime validity code with no renewal requirements.",
+      description:
+        "Import Export Code (IEC) is a 10-digit unique identification number mandatory for any business wanting to import or export goods and services from India. Issued by DGFT (Directorate General of Foreign Trade), it's a lifetime validity code with no renewal requirements.",
       category: "compliance",
       image: Code,
     },
     {
       title: "ICEGATE Registration",
       slug: "icegate-registration",
-      description: "ICEGATE (Indian Customs Electronic Gateway) is the national portal of Indian Customs for electronic filing of import/export documentation. It provides a single-window interface for the trade to interact with Customs and enables online filing of Bills of Entry, Shipping Bills, and other customs documents.",
+      description:
+        "ICEGATE (Indian Customs Electronic Gateway) is the national portal of Indian Customs for electronic filing of import/export documentation. It provides a single-window interface for the trade to interact with Customs and enables online filing of Bills of Entry, Shipping Bills, and other customs documents.",
       category: "compliance",
       image: ICEGATE,
     },
 
     // Funding Support
-    
+
     {
       title: "Startup India Seedfund",
       slug: "startup-india-seedfund",
-      description: "The Startup India Seed Fund Scheme (SISFS) provides financial assistance to startups for proof of concept, prototype development, product trials, market entry, and commercialization. The scheme aims to support startups with funding up to ₹50 lakhs to validate their business ideas and achieve key milestones.",
+      description:
+        "The Startup India Seed Fund Scheme (SISFS) provides financial assistance to startups for proof of concept, prototype development, product trials, market entry, and commercialization. The scheme aims to support startups with funding up to ₹50 lakhs to validate their business ideas and achieve key milestones.",
       category: "funding",
       image: Seed,
     },
     {
       title: "RKVY-Raftaar",
       slug: "rkvy-raftaar",
-      description: "Rashtriya Krishi Vikas Yojana - Remunerative Approaches for Agriculture and Allied sector Rejuvenation (RKVY-RAFTAAR) is a government scheme to promote innovation and agri-entrepreneurship. It provides financial support to agri-startups and rural enterprises for innovative projects in agriculture and allied sectors.",
+      description:
+        "Rashtriya Krishi Vikas Yojana - Remunerative Approaches for Agriculture and Allied sector Rejuvenation (RKVY-RAFTAAR) is a government scheme to promote innovation and agri-entrepreneurship. It provides financial support to agri-startups and rural enterprises for innovative projects in agriculture and allied sectors.",
       category: "funding",
       image: RKVY,
     },
     {
       title: "NAIFF",
       slug: "naiff",
-      description: "National Agriculture Infra Financing Facility (NAIFF) provides medium to long-term debt financing for investment in viable projects for post-harvest management infrastructure and community farming assets. It aims to improve agricultural infrastructure and logistics with interest subvention and credit guarantee support.",
+      description:
+        "National Agriculture Infra Financing Facility (NAIFF) provides medium to long-term debt financing for investment in viable projects for post-harvest management infrastructure and community farming assets. It aims to improve agricultural infrastructure and logistics with interest subvention and credit guarantee support.",
       category: "funding",
       image: NAIFF,
     },
     {
       title: "PMEGP",
       slug: "pmegp",
-      description: "Prime Minister's Employment Generation Programme (PMEGP) is a credit-linked subsidy scheme for setting up new micro-enterprises in manufacturing and service sectors. The scheme provides margin money subsidy ranging from 15% to 35% of project cost to generate employment opportunities.",
+      description:
+        "Prime Minister's Employment Generation Programme (PMEGP) is a credit-linked subsidy scheme for setting up new micro-enterprises in manufacturing and service sectors. The scheme provides margin money subsidy ranging from 15% to 35% of project cost to generate employment opportunities.",
       category: "funding",
       image: PMEGP,
     },
     {
       title: "CGTMSE",
       slug: "cgtmse",
-      description: "Credit Guarantee Fund Trust for Micro and Small Enterprises (CGTMSE) provides collateral-free credit to micro and small enterprises. The scheme guarantees loans extended by banks and financial institutions, enabling entrepreneurs to get loans without pledging property or assets.",
+      description:
+        "Credit Guarantee Fund Trust for Micro and Small Enterprises (CGTMSE) provides collateral-free credit to micro and small enterprises. The scheme guarantees loans extended by banks and financial institutions, enabling entrepreneurs to get loans without pledging property or assets.",
       category: "funding",
       image: CGTMSE,
     },
     {
       title: "Mudra Loan",
       slug: "mudra-loan",
-      description: "Pradhan Mantri Mudra Yojana (PMMY) provides loans to micro and small business units to help them expand and grow. The loans are categorized into three segments - Shishu (up to ₹50,000), Kishore (₹50,000 to ₹5 lakhs), and Tarun (₹5 lakhs to ₹10 lakhs) to cater to different business needs.",
+      description:
+        "Pradhan Mantri Mudra Yojana (PMMY) provides loans to micro and small business units to help them expand and grow. The loans are categorized into three segments - Shishu (up to ₹50,000), Kishore (₹50,000 to ₹5 lakhs), and Tarun (₹5 lakhs to ₹10 lakhs) to cater to different business needs.",
       category: "funding",
       image: Mudra,
     },
     {
       title: "Startup Seed Support",
       slug: "startup-seed-support",
-      description: "Various state and central government seed support schemes provide early-stage funding to startups for validation, prototyping, and initial operations. These schemes offer grants, soft loans, and equity support to innovative startups across different sectors and stages of development.",
+      description:
+        "Various state and central government seed support schemes provide early-stage funding to startups for validation, prototyping, and initial operations. These schemes offer grants, soft loans, and equity support to innovative startups across different sectors and stages of development.",
       category: "funding",
       image: SeedSupport,
     },
     {
       title: "Project Finance",
       slug: "project-finance",
-      description: "Project Finance is a funding structure based on the cash flows and assets of a specific project rather than the balance sheet of sponsors. It's ideal for large capital-intensive projects in infrastructure, manufacturing, renewable energy, and other sectors requiring substantial investment.",
+      description:
+        "Project Finance is a funding structure based on the cash flows and assets of a specific project rather than the balance sheet of sponsors. It's ideal for large capital-intensive projects in infrastructure, manufacturing, renewable energy, and other sectors requiring substantial investment.",
       category: "funding",
       image: Project,
     },
     {
       title: "Venture Capital Funds",
       slug: "venture-capital-funds",
-      description: "Venture Capital (VC) funding is equity investment in high-growth startups and companies with significant potential. VCs provide not just capital but also strategic guidance, network access, and operational support to help startups scale rapidly and achieve market leadership.",
+      description:
+        "Venture Capital (VC) funding is equity investment in high-growth startups and companies with significant potential. VCs provide not just capital but also strategic guidance, network access, and operational support to help startups scale rapidly and achieve market leadership.",
       category: "funding",
       image: VentureCapital,
     },
@@ -408,22 +427,78 @@ function Support() {
     {
       label: "All Services",
       value: "all",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 10h16M4 14h16M4 18h16"
+          />
+        </svg>
+      ),
     },
     {
       label: "Business Registration",
       value: "registration",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+          />
+        </svg>
+      ),
     },
     {
       label: "Certificates & Compliances",
       value: "compliance",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      ),
     },
     {
       label: "Funding Support",
       value: "funding",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      ),
     },
     // {
     //   label: "Digital Transformation",
@@ -437,7 +512,7 @@ function Support() {
       ? businessTypes
       : businessTypes.filter((business) => business.category === activeFilter);
 
-  const activeCategory = categories.find(cat => cat.value === activeFilter);
+  const activeCategory = categories.find((cat) => cat.value === activeFilter);
 
   const handleServiceClick = (business) => {
     setSelectedService(business);
@@ -471,12 +546,19 @@ function Support() {
                 <span className="text-lg">{activeCategory?.label}</span>
               </div>
               <svg
-                className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''} group-hover:scale-110`}
+                className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 ${
+                  isDropdownOpen ? "rotate-180" : ""
+                } group-hover:scale-110`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
 
@@ -492,9 +574,10 @@ function Support() {
                       key={filter.value}
                       className={`w-full text-left px-6 py-4 flex items-center gap-3 
                         transition-all duration-300 ease-in-out 
-                        ${activeFilter === filter.value
-                          ? "bg-[#245586] text-white font-semibold"
-                          : "text-[#245586] hover:bg-[#245586] hover:text-white font-medium"
+                        ${
+                          activeFilter === filter.value
+                            ? "bg-[#245586] text-white font-semibold"
+                            : "text-[#245586] hover:bg-[#245586] hover:text-white font-medium"
                         } 
                         ${index !== 0 ? "border-t border-gray-200" : ""}
                         hover:pl-8 hover:shadow-inner`}
@@ -503,7 +586,9 @@ function Support() {
                       <span className="flex-shrink-0 text-lg transition-transform duration-300 group-hover:scale-110">
                         {filter.icon}
                       </span>
-                      <span className="text-base tracking-wide">{filter.label}</span>
+                      <span className="text-base tracking-wide">
+                        {filter.label}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -519,7 +604,9 @@ function Support() {
             <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden sticky top-4 h-[360px] flex flex-col">
               {/* Header Section */}
               <div className="bg-[#245586] text-white px-5 py-3.5">
-                <h3 className="text-sm font-semibold tracking-wide">Available Services</h3>
+                <h3 className="text-sm font-semibold tracking-wide">
+                  Available Services
+                </h3>
                 <p className="text-[11px] text-gray-200 mt-0.5">
                   {filteredBusinessTypes.length} services
                 </p>
@@ -533,17 +620,21 @@ function Support() {
                     onClick={() => handleServiceClick(business)}
                     className={`w-full text-left px-5 py-2.5 flex items-center justify-between gap-3 
               transition-all duration-300 ease-in-out relative text-sm
-              ${selectedService?.slug === business.slug || (!selectedService && index === 0)
-                        ? "bg-[#f5faff] border-l-4 border-[#245586] text-[#245586] font-semibold"
-                        : "text-gray-700 hover:bg-[#245586]/10 hover:border-l-4 hover:border-[#245586] hover:text-[#245586]"
-                      } ${index !== 0 ? "border-t border-gray-100" : ""}`}
+              ${
+                selectedService?.slug === business.slug ||
+                (!selectedService && index === 0)
+                  ? "bg-[#f5faff] border-l-4 border-[#245586] text-[#245586] font-semibold"
+                  : "text-gray-700 hover:bg-[#245586]/10 hover:border-l-4 hover:border-[#245586] hover:text-[#245586]"
+              } ${index !== 0 ? "border-t border-gray-100" : ""}`}
                   >
                     <span className="truncate">{business.title}</span>
                     <span
-                      className={`absolute right-4 w-2 h-2 rounded-full transition-all duration-300 ${selectedService?.slug === business.slug || (!selectedService && index === 0)
-                        ? "bg-[#245586] scale-100 opacity-100"
-                        : "bg-[#245586] scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100"
-                        }`}
+                      className={`absolute right-4 w-2 h-2 rounded-full transition-all duration-300 ${
+                        selectedService?.slug === business.slug ||
+                        (!selectedService && index === 0)
+                          ? "bg-[#245586] scale-100 opacity-100"
+                          : "bg-[#245586] scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100"
+                      }`}
                     ></span>
                   </button>
                 ))}
@@ -555,10 +646,8 @@ function Support() {
           <div className="flex-1">
             {displayService && (
               <div className="flex flex-col md:flex-row bg-white/90 backdrop-blur-md rounded-3xl shadow-lg hover:shadow-2xl overflow-hidden border border-gray-100 transition-all duration-500 hover:-translate-y-1 h-[360px]">
-
                 {/* Left Content - Centered */}
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-10 relative">
-
                   <div className="max-w-md">
                     <h3 className="relative text-3xl font-bold text-[#1c4268] mb-4 leading-snug tracking-tight group cursor-pointer">
                       {displayService.title}
@@ -570,7 +659,7 @@ function Support() {
                     </p>
 
                     <Link
-                      href={`/inheritance/${displayService.slug}`}
+                      href={`/service/${displayService.slug}`}
                       className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full 
                         bg-gradient-to-r from-[#1c4268] to-[#245586] text-white font-semibold text-sm md:text-base
                         shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 group"
@@ -596,7 +685,7 @@ function Support() {
                 {/* Right Image */}
                 <div className="relative flex-1 h-[380px] overflow-hidden group">
                   <Image
-                    src={displayService.image}  // <-- pass the imported image object, not .src
+                    src={displayService.image} // <-- pass the imported image object, not .src
                     alt={displayService.title}
                     className="w-full h-full object-cover transition-transform duration-[2500ms] ease-out group-hover:scale-110"
                   />
@@ -606,7 +695,6 @@ function Support() {
               </div>
             )}
           </div>
-
         </div>
       </div>
     </section>

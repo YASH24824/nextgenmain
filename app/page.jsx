@@ -1,28 +1,30 @@
 import Hero from "./components/home/Hero";
 import { Header } from "./components/Header";
 import CounterSection from "./components/home/CounterSection";
-import Timeline2 from "./components/home/Timeline2";
-import { HotServicesSection } from "./components/home/HotServicesSection";
+import { HotServicesSection } from "./components/HotServicesSection";
 import Footer from "./components/Footer";
 import "./page.css";
-import TestimonialsSlider from "./components/home/TestimonialsSlider";
-import Testimonialmobile from "./components/home/TestimonialsMobile";
 import Test from "./components/home/Test";
 import CTA from "./components/home/CTA";
 import GrowthSection from "./components/home/GrowthSection";
 import GoogleReview from "./components/home/GoogleReview";
-import Script from "next/script"; // ✅ Import Next.js Script
+import Script from "next/script";
 
 export const metadata = {
-  title: "NextGen Business Consultancy | India’s Startup Growth Hub",
+  title: "NextGen Business Consultancy | India's Startup Growth Hub",
   description:
-    "Your one-stop hub for Startup India, MSME support, tax exemptions, and investor connections. NextGen powers India’s startup growth journey.",
-    alternates: {
+    "Your one-stop hub for Startup India, MSME support, tax exemptions, and investor connections. NextGen powers India's startup growth journey.",
+  alternates: {
     canonical: "https://www.nextgenbusiness.co.in/",
   },
 
+  robots: {
+    index: true,
+    follow: true,
+  },
+
   openGraph: {
-    title: "India’s Trusted Partner for Startup Success | NextGen Consultancy",
+    title: "India's Trusted Partner for Startup Success | NextGen Consultancy",
     description:
       "Get expert guidance on registrations, tax holidays, compliance & investor linkage with NextGen Consultancy.",
     url: "https://www.nextgenbusiness.co.in/",
@@ -41,7 +43,7 @@ export const metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "India’s Trusted Partner for Startup Success | NextGen Consultancy",
+    title: "India's Trusted Partner for Startup Success | NextGen Consultancy",
     description:
       "Get expert guidance on registrations, tax holidays, compliance & investor linkage with NextGen Consultancy.",
     images: ["https://www.nextgenbusiness.co.in/og-image-home.jpg"],
@@ -51,8 +53,9 @@ export const metadata = {
 
 export default function Home() {
   const faqSchema = {
-    "@context": "https://schema.org/",
+    "@context": "https://schema.org",
     "@type": "FAQPage",
+    "@id": "https://www.nextgenbusiness.co.in/#faqpage",
     mainEntity: [
       {
         "@type": "Question",
@@ -83,7 +86,7 @@ export default function Home() {
         name: "How does your consultancy stand out?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "We don’t just advise; we co-create, building businesses like co-founders, not outside consultants.",
+          text: "We don't just advise; we co-create, building businesses like co-founders, not outside consultants.",
         },
       },
       {
@@ -105,25 +108,64 @@ export default function Home() {
     ],
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "@id": "https://www.nextgenbusiness.co.in/#breadcrumb",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://www.nextgenbusiness.co.in/",
+      },
+    ],
+  };
+
   return (
     <>
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
       <Header />
       <Hero />
       <CounterSection />
       <GrowthSection />
       <HotServicesSection />
       <Test />
+      {/* <p>Hello Form part</p>
+      <DemoContact /> */}
       <GoogleReview />
-      {/* Desktop / Tablet version */}
-      {/* <div className="hidden md:block">
-        <TestimonialsSlider />
-      </div> */}
-      {/* Mobile version */}
-      {/* <div className="block md:hidden">
-        <Testimonialmobile />
-      </div> */}
       <CTA />
       <Footer />
     </>
   );
+}
+
+{
+  /* Desktop / Tablet version */
+}
+{
+  /* <div className="hidden md:block">
+        <TestimonialsSlider />
+      </div> */
+}
+{
+  /* Mobile version */
+}
+{
+  /* <div className="block md:hidden">
+        <Testimonialmobile />
+      </div> */
 }
