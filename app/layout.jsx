@@ -267,10 +267,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${beVietnamPro.variable} ${bebasNeue.variable} ${inter.variable}`}>
       <head>
-        <link
-          rel="preconnect"
-          href="https://resend-mail-worker.vatsal-9e7.workers.dev"
-        />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.clarity.ms" />
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />

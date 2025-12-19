@@ -40,8 +40,8 @@ export const ContactForm = ({ serviceTitle, onClose }) => {
 
     if (!formData.mobile.trim()) {
       newErrors.mobile = "Mobile number is required";
-    } else if (!/^\d{10}$/.test(formData.mobile.trim())) {
-      newErrors.mobile = "Enter a valid 10-digit mobile number";
+    } else if (!/^[0-9]{10,15}$/.test(formData.mobile.trim())) {
+      newErrors.mobile = "Enter a valid 10-15 digit mobile number";
     }
 
     if (!formData.email.trim()) {
@@ -63,35 +63,42 @@ export const ContactForm = ({ serviceTitle, onClose }) => {
 
     setLoading(true);
 
-    // Split name into firstName and lastName
-    const nameParts = formData.name.trim().split(" ");
-    const firstName = nameParts[0] || "";
-    const lastName = nameParts.slice(1).join(" ") || "";
+    // Build message including company and service title
+    const messageParts = [];
+    if (formData.company.trim()) {
+      messageParts.push(`Company: ${formData.company}`);
+    }
+    if (serviceTitle) {
+      messageParts.push(`Service: ${serviceTitle}`);
+    }
+    const message = messageParts.length > 0 
+      ? messageParts.join(", ") 
+      : "Service Inquiry";
 
     const payload = {
-      firstName,
-      lastName,
-      email: formData.email,
-      phone: formData.mobile,
-      inquiryType: serviceTitle || "General Inquiry",
-      site: "NextGen Consultancy - Service Inquiry",
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phone: formData.mobile.trim(),
+      message: message,
+      captchaAnswer: "", // No CAPTCHA for modal forms
+      domain: process.env.NEXT_PUBLIC_DOMAIN,
     };
 
     try {
-      console.log("📤 Sending form data:", payload);
+      const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+          Origin: typeof window !== "undefined" ? window.location.origin : "",
+        },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
 
-      const res = await fetch(
-        "https://resend-mail-worker.vatsal-9e7.workers.dev/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
+      const data = await response.json();
 
-      const data = await res.json();
-
-      if (res.ok) {
+      if (response.ok) {
         setAlert({
           type: "success",
           message: "Form submitted successfully ✅",
@@ -102,12 +109,12 @@ export const ContactForm = ({ serviceTitle, onClose }) => {
       } else {
         setAlert({
           type: "error",
-          message: data.error || "Something went wrong",
+          message: data.error || "Something went wrong. Please try again.",
         });
       }
     } catch (error) {
       console.error("❌ Error submitting form:", error);
-      setAlert({ type: "error", message: "Network error!" });
+      setAlert({ type: "error", message: "Network error! Please try again." });
     } finally {
       setLoading(false);
     }

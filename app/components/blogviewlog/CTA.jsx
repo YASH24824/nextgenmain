@@ -10,8 +10,17 @@ export default function CTAProfessionalDark() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) {
+    const trimmedEmail = email.trim();
+    
+    if (!trimmedEmail) {
       setError("⚠️ Please enter your email!");
+      return;
+    }
+    
+    // Validate email format
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(trimmedEmail)) {
+      setError("⚠️ Please enter a valid email address!");
       return;
     }
     
@@ -20,17 +29,22 @@ export default function CTAProfessionalDark() {
     
     try {
       const payload = {
-        firstName: "",
-        lastName: "",
-        email: email,
+        name: "",
+        email: trimmedEmail,
         phone: "",
-        inquiryType: "Newsletter/CTA",
-        site: "NextGen Consultancy - Blog View Page"
+        message: "Newsletter subscription from Blog View Page",
+        captchaAnswer: "",
+        domain: process.env.NEXT_PUBLIC_DOMAIN,
       };
 
-      const response = await fetch('https://resend-mail-worker.vatsal-9e7.workers.dev/', {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY,
+          'Origin': typeof window !== 'undefined' ? window.location.origin : '',
+        },
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
       
