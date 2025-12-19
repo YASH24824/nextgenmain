@@ -290,10 +290,10 @@ export default function FestivalGallery({ params }) {
                   alt={`${festival.title} - Image ${index + 1}`}
                   width={400}
                   height={item.height}
-                  unoptimized
                   className="w-full object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw,(max-width: 1024px) 50vw,(max-width: 1280px) 33vw,25vw"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                   priority={index < 3}
+                  loading={index < 3 ? undefined : "lazy"}
                   onLoad={handleImageLoad}
                   ref={(el) => {
                     if (el && !imageRefs.current.includes(el)) {

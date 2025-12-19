@@ -4,6 +4,7 @@ import Form from "../components/contact/Form";
 import Address from "../components/contact/Address";
 import CTA from "../components/contact/CTA";
 import Footer from "../components/Footer";
+import Script from "next/script";
 import "./page.css";
 
 export const metadata = {
@@ -54,8 +55,34 @@ export const metadata = {
 };
 
 export default function Contact() {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "@id": "https://www.nextgenbusiness.co.in/contact#breadcrumb",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://www.nextgenbusiness.co.in/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Contact",
+        item: "https://www.nextgenbusiness.co.in/contact",
+      },
+    ],
+  };
+
   return (
     <>
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Header />
       <Hero />
       <Form />

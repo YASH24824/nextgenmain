@@ -1,6 +1,33 @@
 import "./globals.css";
 import FloatingButton from "./components/FloatingButton";
 import Script from "next/script";
+import { Be_Vietnam_Pro, Bebas_Neue, Inter } from "next/font/google";
+
+// Optimize fonts with Next.js font optimization
+const beVietnamPro = Be_Vietnam_Pro({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-be-vietnam-pro",
+  preload: true,
+});
+
+const bebasNeue = Bebas_Neue({
+  weight: ["400"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-bebas-neue",
+  preload: true,
+});
+
+const inter = Inter({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+  preload: true,
+});
 
 export const metadata = {
   title: "NEXT-GEN BUSINESS CONSULTANCY",
@@ -18,18 +45,51 @@ export const metadata = {
     canonical: "https://www.nextgenbusiness.co.in/",
   },
 
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+    viewportFit: "cover",
+  },
+
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
     shortcut: "/favicon-32x32.png",
-    apple: "/apple-touch-icon.png",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "NextGen Business",
+  },
+
+  formatDetection: {
+    telephone: true,
   },
 
   openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "https://www.nextgenbusiness.co.in",
+    siteName: "NextGen Business Consultancy",
     title: "NEXT-GEN BUSINESS CONSULTANCY",
     description:
       "Your one-stop hub for Startup India, MSME support, tax exemptions, and investor connections.",
-    url: "https://www.nextgenbusiness.co.in",
-    images: ["/Next-Gen-Logo.png"],
+    images: [
+      {
+        url: "https://www.nextgenbusiness.co.in/Next-Gen-Logo.png",
+        width: 1200,
+        height: 630,
+        alt: "NextGen Business Consultancy",
+      },
+    ],
   },
 
   twitter: {
@@ -37,7 +97,8 @@ export const metadata = {
     title: "NEXT-GEN BUSINESS CONSULTANCY",
     description:
       "Your one-stop hub for Startup India, MSME support, tax exemptions, and investor connections.",
-    images: ["/Next-Gen-Logo.png"],
+    images: ["https://www.nextgenbusiness.co.in/Next-Gen-Logo.png"],
+    creator: "@NextGenBiz",
   },
 };
 
@@ -204,20 +265,16 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${beVietnamPro.variable} ${bebasNeue.variable} ${inter.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
         <link
           rel="preconnect"
           href="https://resend-mail-worker.vatsal-9e7.workers.dev"
         />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.clarity.ms" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.clarity.ms" crossOrigin="anonymous" />
 
         <script
           type="application/ld+json"
@@ -253,7 +310,9 @@ export default function RootLayout({ children }) {
           }}
         />
 
-        <script
+        <Script
+          id="microsoft-clarity"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `
               (function(c,l,a,r,i,t,y){

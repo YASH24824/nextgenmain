@@ -1,35 +1,85 @@
 // app/sitemap.js
+import { businessTypes } from "./service/data/businessData";
+
 export default function sitemap() {
   const baseUrl = "https://www.nextgenbusiness.co.in";
+  const lastModified = new Date().toISOString();
 
-  return [
+  // Static pages
+  const staticPages = [
     {
       url: `${baseUrl}/`,
-      lastModified: new Date().toISOString(),
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 1.0,
     },
     {
       url: `${baseUrl}/about`,
-      lastModified: new Date().toISOString(),
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/solution`,
-      lastModified: new Date().toISOString(),
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/contact`,
-      lastModified: new Date().toISOString(),
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
     {
-      url: `${baseUrl}/sitemap`,
-      lastModified: new Date().toISOString(),
+      url: `${baseUrl}/blog`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/privacy-policy`,
-      lastModified: new Date().toISOString(),
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.3,
     },
     {
       url: `${baseUrl}/terms-condition`,
-      lastModified: new Date().toISOString(),
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.3,
     },
   ];
+
+  // Service pages (dynamic routes)
+  const servicePages = businessTypes.map((service) => ({
+    url: `${baseUrl}/service/${service.slug}`,
+    lastModified,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  // Festival/Event pages
+  const festivalPages = [
+    {
+      url: `${baseUrl}/about/festival/ganesh-chaturthi-celebrations`,
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/about/festival/diwali-celebrations`,
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/about/festival/events-activities`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+  ];
+
+  return [...staticPages, ...servicePages, ...festivalPages];
 }

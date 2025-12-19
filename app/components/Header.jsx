@@ -37,7 +37,9 @@ export const Header = () => {
             alt="Logo"
             width={160}
             height={60}
+            priority
             className="w-32 sm:w-36 lg:w-52 object-contain pt-2 sm:pt-3 lg:pt-4"
+            sizes="(max-width: 640px) 128px, (max-width: 1024px) 144px, 208px"
           />
         </div>
         {/* <a href="/" className="flex-shrink-0">

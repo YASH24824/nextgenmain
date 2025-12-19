@@ -7,6 +7,7 @@ import Impact from "../components/about/Impact";
 import CTA from "../components/about/CTA";
 import FestivalCelebrationSection from "../components/about/FestivalCelebrationSection";
 import TeamHierarchySection from "../components/about/TeamHierarchySection";
+import Script from "next/script";
 
 import "./page.css";
 
@@ -53,8 +54,34 @@ export const metadata = {
 };
 
 export default function About() {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "@id": "https://www.nextgenbusiness.co.in/about#breadcrumb",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://www.nextgenbusiness.co.in/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "About",
+        item: "https://www.nextgenbusiness.co.in/about",
+      },
+    ],
+  };
+
   return (
     <>
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Hero />
       <FestivalCelebrationSection />
       {/* <Services /> */}

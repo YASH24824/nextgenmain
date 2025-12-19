@@ -59,7 +59,9 @@ export default function Hero() {
             alt="Hero Banner"
             fill
             priority
+            fetchPriority="high"
             className="absolute inset-0 w-full h-full object-cover"
+            sizes="100vw"
           />
           {/* Professional dark overlay with subtle blue tint */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#0a1929]/98 via-[#1a2f4a]/96 to-[#0d1b2a]/98"></div>

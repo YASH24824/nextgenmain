@@ -4,11 +4,22 @@ import CounterSection from "./components/home/CounterSection";
 import { HotServicesSection } from "./components/HotServicesSection";
 import Footer from "./components/Footer";
 import "./page.css";
-import Test from "./components/home/Test";
-import CTA from "./components/home/CTA";
-import GrowthSection from "./components/home/GrowthSection";
-import GoogleReview from "./components/home/GoogleReview";
+import dynamic from "next/dynamic";
 import Script from "next/script";
+
+// Dynamic imports for below-fold components to improve initial load
+const Test = dynamic(() => import("./components/home/Test"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const CTA = dynamic(() => import("./components/home/CTA"), {
+  loading: () => <div className="min-h-[200px]" />,
+});
+const GrowthSection = dynamic(() => import("./components/home/GrowthSection"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const GoogleReview = dynamic(() => import("./components/home/GoogleReview"), {
+  loading: () => <div className="min-h-[300px]" />,
+});
 
 export const metadata = {
   title: "NextGen Business Consultancy | India's Startup Growth Hub",

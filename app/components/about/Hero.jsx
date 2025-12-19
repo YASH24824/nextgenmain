@@ -17,7 +17,9 @@ export default function Hero() {
         alt="Hero Banner"
         fill
         priority
+        fetchPriority="high"
         className="absolute inset-0 w-full h-full object-cover"
+        sizes="100vw"
       />
 
       {/* Content Container */}
