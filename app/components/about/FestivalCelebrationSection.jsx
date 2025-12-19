@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
-import image1 from "../../assets/ganesh/1.jpg";
+import image1 from "../../assets/ganesh/1.JPG";
 import image21 from "../../assets/diwali/1.jpg";
 import image46 from "../../assets/activites/1.jpg";
 
