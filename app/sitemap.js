@@ -1,5 +1,6 @@
 // app/sitemap.js
 import { businessTypes } from "./service/data/businessData";
+import { getAllBlogs } from "./blog/data/blogData";
 
 export default function sitemap() {
   const baseUrl = "https://www.nextgenbusiness.co.in";
@@ -59,27 +60,35 @@ export default function sitemap() {
     priority: 0.8,
   }));
 
+  // Blog pages (dynamic routes)
+  const blogPages = getAllBlogs().map((blog) => ({
+    url: `${baseUrl}/blog/${blog.slug}`,
+    lastModified,
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
   // Festival/Event pages
   const festivalPages = [
     {
-      url: `${baseUrl}/about/festival/ganesh-chaturthi-celebrations`,
+      url: `${baseUrl}/about/events/ganesh-chaturthi-celebrations`,
       lastModified,
       changeFrequency: "yearly",
       priority: 0.6,
     },
     {
-      url: `${baseUrl}/about/festival/diwali-celebrations`,
+      url: `${baseUrl}/about/events/diwali-celebrations`,
       lastModified,
       changeFrequency: "yearly",
       priority: 0.6,
     },
     {
-      url: `${baseUrl}/about/festival/events-activities`,
+      url: `${baseUrl}/about/events/events-activities`,
       lastModified,
       changeFrequency: "monthly",
       priority: 0.6,
     },
   ];
 
-  return [...staticPages, ...servicePages, ...festivalPages];
+  return [...staticPages, ...servicePages, ...blogPages, ...festivalPages];
 }

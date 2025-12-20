@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { MapPin, Clock, Phone, Mail } from "lucide-react";
 import { useState } from "react";
-import Officebg from "../../assets/office-map.webp";
+const Officebg = "/assets/office-map.webp";
 import { motion, useAnimation } from "framer-motion";
 
 const Address = () => {

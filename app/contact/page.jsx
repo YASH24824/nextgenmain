@@ -88,6 +88,7 @@ export default function Contact() {
       <Form />
       <Address />
       <CTA />
+      <Footer />
     </>
   );
 }

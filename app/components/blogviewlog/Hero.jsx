@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Hero_Banner from "../../assets/HomeBanner.webp";
+const Hero_Banner = "/assets/HomeBanner.webp";
 
 export default function Hero() {
   return (

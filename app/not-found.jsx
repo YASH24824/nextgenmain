@@ -1,10 +1,10 @@
-// app/not-found.tsx
+// app/not-found.jsx
 import Image from "next/image";
-import notfoundInmage from "./assets/404.png";
+const notfoundInmage = "/assets/404.png";
 import "./privacy-policy/page.css";
 import { Header } from "./components/Header";
 import Footer from "./components/Footer";
-import Hero_Banner from "./assets/Hero _Banner.webp";
+const Hero_Banner = "/assets/Hero _Banner.webp";
 export default function NotFound() {
   return (
     <>
@@ -55,14 +55,14 @@ export default function NotFound() {
                     <path
                       d="M9.57159 7.31981L13.1948 4.15991L9.57159 1"
                       stroke="white"
-                      strokeWidth="0.679356"
-                      strokeLinecap="round"
+                      stroke-width="0.679356"
+                      stroke-linecap="round"
                     />
                     <path
                       d="M12.7754 4.23535L0.999939 4.23535"
                       stroke="white"
-                      strokeWidth="0.679356"
-                      strokeLinecap="round"
+                      stroke-width="0.679356"
+                      stroke-linecap="round"
                     />
                   </svg>
                 </span>

@@ -3,10 +3,10 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-import Impact1 from "../../assets/Impact1.png";
-import Impact2 from "../../assets/Impact2.png";
-import Impact3 from "../../assets/Impact3.png";
-import Impact4 from "../../assets/Impact4.png";
+const Impact1 = "/assets/Impact1.png";
+const Impact2 = "/assets/Impact2.png";
+const Impact3 = "/assets/Impact3.png";
+const Impact4 = "/assets/Impact4.png";
 
 const Impact = () => {
   const impacts = [
@@ -68,6 +68,8 @@ const Impact = () => {
                 <Image
                   src={impact.image}
                   alt={impact.title}
+                  width={56}
+                  height={56}
                   className="w-12 h-12 md:w-14 md:h-14 object-contain relative z-10 transform group-hover:scale-110 transition-transform duration-300"
                 />
               </div>

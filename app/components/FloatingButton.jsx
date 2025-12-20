@@ -32,13 +32,7 @@ const FloatingButton = () => {
       <div className="fixed left-0 top-1/2 -translate-y-1/2 z-40">
         <button
           onClick={toggleModal}
-          className={`relative w-16 h-48 flex flex-col items-center justify-center
-  bg-gradient-to-b from-[#1c3a6d] to-[#4975b8]
-  text-white font-semibold text-sm sm:text-base tracking-wide
-  rounded-r-3xl overflow-hidden
-  shadow-lg shadow-[#245586]/50
-  hover:scale-105 hover:shadow-xl hover:shadow-[#76a5d3]/70
-  transition-all duration-300`}
+          className="relative w-16 h-48 flex flex-col items-center justify-center bg-gradient-to-b from-[#1c3a6d] to-[#4975b8] text-white font-semibold text-sm sm:text-base tracking-wide rounded-r-3xl overflow-hidden shadow-lg shadow-[#245586]/50 hover:scale-105 hover:shadow-xl hover:shadow-[#76a5d3]/70 transition-all duration-300"
           style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
           aria-label="Book a Consultation"
         >

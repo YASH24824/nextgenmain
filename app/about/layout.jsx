@@ -23,6 +23,8 @@ export default function AboutLayout({ children }) {
       <Header />
 
       <main>{children}</main>
+
+      <Footer />
     </>
   );
 }

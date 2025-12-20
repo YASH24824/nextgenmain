@@ -225,25 +225,25 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useAnimation } from "framer-motion";
-import Private from "../../assets/private-limited.jpg";
-import LLP from "../../assets/llp.jpg";
-import OPC from "../../assets/opc-registation.jpg";
-import Registered from "../../assets/registered.jpg";
-import GST from "../../assets/gst.jpg";
-import Compliance from "../../assets/compliance.jpeg";
-import Startup from "../../assets/startup.png";
-import MSME from "../../assets/msme.jpg";
-import Code from "../../assets/code.webp";
-import ICEGATE from "../../assets/icegate.jpg";
-import Seed from "../../assets/seed.png";
-import RKVY from "../../assets/rkvy.webp";
-import NAIFF from "../../assets/naiff.jpg";
-import PMEGP from "../../assets/pmegp.webp";
-import CGTMSE from "../../assets/cgtmse.jpg";
-import Mudra from "../../assets/mudra.png";
-import SeedSupport from "../../assets/seed-support.png";
-import Project from "../../assets/project.webp";
-import VentureCapital from "../../assets/venture-capital.png";
+const Private = "/assets/private-limited.webp";
+const LLP = "/assets/llp.webp";
+const OPC = "/assets/opc-registation.webp";
+const Registered = "/assets/registered.webp";
+const GST = "/assets/gst.webp";
+const Compliance = "/assets/compliance.webp";
+const Startup = "/assets/startup.png";
+const MSME = "/assets/msme.webp";
+const Code = "/assets/code.webp";
+const ICEGATE = "/assets/icegate.webp";
+const Seed = "/assets/seed.png";
+const RKVY = "/assets/rkvy.webp";
+const NAIFF = "/assets/naiff.webp";
+const PMEGP = "/assets/pmegp.webp";
+const CGTMSE = "/assets/cgtmse.webp";
+const Mudra = "/assets/mudra.png";
+const SeedSupport = "/assets/seed-support.png";
+const Project = "/assets/project.webp";
+const VentureCapital = "/assets/venture-capital.png";
 import Image from "next/image";
 
 function Support() {
@@ -687,6 +687,8 @@ function Support() {
                   <Image
                     src={displayService.image} // <-- pass the imported image object, not .src
                     alt={displayService.title}
+                    width={800}
+                    height={380}
                     className="w-full h-full object-cover transition-transform duration-[2500ms] ease-out group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-l from-black/40 via-transparent to-transparent"></div>

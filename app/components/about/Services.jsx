@@ -3,12 +3,12 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import Image1 from "../../assets/1.jpg";
-import Image2 from "../../assets/2.jpg";
-import Image3 from "../../assets/s1.jpg";
-import Image4 from "../../assets/s2.jpg";
-import Image5 from "../../assets/c1.jpg";
-import Image6 from "../../assets/c2.jpg";
+const Image1 = "/assets/1.webp";
+const Image2 = "/assets/2.webp";
+const Image3 = "/assets/s1.webp";
+const Image4 = "/assets/s2.webp";
+const Image5 = "/assets/c1.webp";
+const Image6 = "/assets/c2.webp";
 
 // Features data
 const features = [

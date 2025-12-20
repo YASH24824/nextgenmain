@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import Slider from "react-slick";
 import Image from "next/image";
-import slide1 from "../../assets/slide1.png";
+const slide1 = "/assets/slide1.png";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -48,6 +48,8 @@ const TestimonialsSlider = () => {
               <Image
                 src={slide1}
                 alt={`Video ${i + 1}`}
+                width={640}
+                height={360}
                 className="h-full w-full object-cover rounded-xl"
               />
               {/* Play button overlay */}

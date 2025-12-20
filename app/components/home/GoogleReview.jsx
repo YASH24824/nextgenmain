@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import Google from "../../assets/google.png";
+const Google = "/assets/google.png";
 import Image from "next/image";
 
 export default function GoogleReviewSlider() {

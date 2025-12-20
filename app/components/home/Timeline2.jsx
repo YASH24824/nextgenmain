@@ -1,7 +1,7 @@
-// components/Timeline.tsx
+// components/Timeline.jsx
 "use client";
 import Image from "next/image";
-import timeline from "../../assets/timeline.webp";
+const timeline = "/assets/timeline.webp";
 
 const steps = [
   {
@@ -72,7 +72,7 @@ export default function Timeline2() {
                 key={step.id}
                 className="relative mt-1 md:mt-6 w-full flex items-center gap-4 px-4 md:gap-8 md:px-20 py-3 md:py-3 rounded-lg shadow-lg bg-white mb-5 md:mb-10"
                 style={{
-                  backgroundImage: `url(${timeline.src})`,
+                  backgroundImage: `url(${timeline})`,
                   backgroundSize: "cover",
                   backgroundRepeat: "repeat",
                 }}

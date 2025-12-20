@@ -3,39 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
-
-const blogs = [
-  {
-    title: "From Idea to Impact: How Startups Can Scale Smartly in India",
-    date: "October 2025",
-    category: "Industry Insights",
-    readingTime: "5 Minutes",
-    tags: ["Startups", "Innovation", "India"],
-    description:
-      "With Amit Shah inaugurating Startup Conclave 2025 in Gandhinagar, the spotlight is on India's booming startup ecosystem. Learn how conclaves create opportunities and visibility for entrepreneurs.",
-    color: "#245586",
-  },
-  {
-    title: "Funding Decoded: Navigating India's Startup Investment Landscape",
-    date: "September 2025",
-    category: "Funding Strategy",
-    readingTime: "6 Minutes",
-    tags: ["Funding", "Venture Capital", "Growth"],
-    description:
-      "Discover the latest trends in Indian startup funding, from seed capital to Series A rounds — and how founders can attract the right investors with clear vision and strategy.",
-    color: "#245586",
-  },
-  {
-    title: "Innovation Meets Impact: Tech Trends Defining 2025",
-    date: "August 2025",
-    category: "Technology",
-    readingTime: "4 Minutes",
-    tags: ["AI", "Innovation", "Future"],
-    description:
-      "Explore how technology is reshaping industries — from AI-driven solutions to sustainable innovations leading the global transformation.",
-    color: "#245586",
-  },
-];
+import { blogs } from "../../blog/data/blogData";
 
 export default function Blog() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -87,10 +55,8 @@ export default function Blog() {
         <div className="grid md:grid-cols-2 gap-8">
           {blogs.map((blog, index) => (
             <Link
-              key={index}
-              href={{
-                pathname: "/blogview",
-              }}
+              key={blog.slug}
+              href={`/blog/${blog.slug}`}
               className="block"
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}

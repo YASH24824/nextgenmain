@@ -1,7 +1,7 @@
 "use client";
 import { Eye, TrendingUp, Zap, ArrowRight, Megaphone } from "lucide-react";
 import { useState, useEffect } from "react";
-import Homebg from "../../assets/home-bg.png";
+const Homebg = "/assets/home-bg.png";
 import Image from "next/image";
 
 export default function Hero() {

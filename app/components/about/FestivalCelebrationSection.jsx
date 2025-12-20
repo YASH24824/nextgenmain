@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
-import image1 from "../../assets/ganesh/1.jpg";
-import image21 from "../../assets/diwali/1.jpg";
-import image46 from "../../assets/activites/1.jpg";
+const image1 = "/assets/ganesh/1.webp";
+const image21 = "/assets/diwali/1.webp";
+const image46 = "/assets/activites/1.webp";
 
 /* ---------------------- FEATURES ---------------------- */
 const features = [
@@ -130,7 +130,7 @@ function TiltCardWrapper({ children, className = "", onMouseFactor = 8 }) {
 /* ---------------------- FESTIVAL IMAGE CARD ---------------------- */
 function FestivalCard({ item, index }) {
   return (
-    <Link href={`/about/festival/${item.slug}`}>
+    <Link href={`/about/events/${item.slug}`}>
       <motion.div
         variants={itemUp}
         initial="hidden"

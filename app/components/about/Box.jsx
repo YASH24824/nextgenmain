@@ -1,10 +1,9 @@
-import group236 from "../../assets/236.png";
-import group237 from "../../assets/237.png";
-import group238 from "../../assets/238.png";
-import group239 from "../../assets/239.png";
-import group244 from "../../assets/244.png";
-// import image from "./image.svg";
-import vector2 from "../../assets/Vector.svg";
+const group236 = "/assets/236.png";
+const group237 = "/assets/237.png";
+const group238 = "/assets/238.png";
+const group239 = "/assets/239.png";
+const group244 = "/assets/244.png";
+const vector2 = "/assets/Vector.svg";
 
 import Image from "next/image";
 

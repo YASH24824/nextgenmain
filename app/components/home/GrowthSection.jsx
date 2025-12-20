@@ -3,7 +3,7 @@
 import { ShieldCheckIcon, GlobeAltIcon, BoltIcon, ChartBarIcon, } from "@heroicons/react/24/outline";
 import { motion, useAnimation } from "framer-motion";
 import Image from "next/image";
-import worldMapImage from "../../assets/bg-img.jpg";
+const worldMapImage = "/assets/bg-img.webp";
 
 export default function GrowthSection() {
   const features = [
