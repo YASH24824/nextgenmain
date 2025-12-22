@@ -44,7 +44,7 @@ export const metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.nextgenbusiness.co.in/og-image-home.jpg",
+        url: "https://www.nextgenbusiness.co.in/og-image-home.webp",
         width: 1200,
         height: 630,
         alt: "NextGen Consultancy - Startup Growth Hub",
@@ -155,28 +155,9 @@ export default function Home() {
       <GrowthSection />
       <HotServicesSection />
       <Test />
-      {/* <p>Hello Form part</p>
-      <DemoContact /> */}
       <GoogleReview />
       <CTA />
       <Footer />
     </>
   );
-}
-
-{
-  /* Desktop / Tablet version */
-}
-{
-  /* <div className="hidden md:block">
-        <TestimonialsSlider />
-      </div> */
-}
-{
-  /* Mobile version */
-}
-{
-  /* <div className="block md:hidden">
-        <Testimonialmobile />
-      </div> */
 }

@@ -33,7 +33,7 @@ export const Header = () => {
         {/* Logo */}
         <div className="flex items-center justify-center h-20">
           <Image
-            src="/images/whiteLogo.png"
+            src="/images/whiteLogo.webp"
             alt="Logo"
             width={160}
             height={60}

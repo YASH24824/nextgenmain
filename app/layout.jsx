@@ -56,11 +56,11 @@ export const metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-32x32.webp", sizes: "32x32", type: "image/webp" },
     ],
-    shortcut: "/favicon-32x32.png",
+    shortcut: "/favicon-32x32.webp",
     apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon.webp", sizes: "180x180", type: "image/webp" },
     ],
   },
 
@@ -84,7 +84,7 @@ export const metadata = {
       "Your one-stop hub for Startup India, MSME support, tax exemptions, and investor connections.",
     images: [
       {
-        url: "https://www.nextgenbusiness.co.in/Next-Gen-Logo.png",
+        url: "https://www.nextgenbusiness.co.in/Next-Gen-Logo.webp",
         width: 1200,
         height: 630,
         alt: "NextGen Business Consultancy",
@@ -103,59 +103,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  // const organizationSchema = {
-  //   "@context": "https://schema.org",
-  //   "@type": "Organization",
-  //   name: "NEXT-GEN BUSINESS CONSULTANCY",
-  //   url: "https://nextgenbusiness.co.in/",
-  //   logo: "https://www.nextgenbusiness.co.in/Next-Gen-Logo.png",
-  //   alternateName: "NEXT-GEN BUSINESS CONSULTNACY PRIVATE LIMITED",
-  //   sameAs: [
-  //     "https://www.facebook.com/people/Next-Gen-Business-Consultancy-Private-Limited/61574060610065/",
-  //     "https://in.linkedin.com/company/nextgen-business-consultancy",
-  //     "https://www.instagram.com/next_gen_business_consultancy/",
-  //   ],
-  //   contactPoint: [
-  //     {
-  //       "@type": "ContactPoint",
-  //       telephone: "+91 9033149731",
-  //       contactType: "customer service",
-  //       email: "info@nextgenbusiness.co.in",
-  //       areaServed: "IN",
-  //       availableLanguage: ["en", "hi", "gu"],
-  //     },
-  //   ],
-  // };
-
-  // const professionalServiceSchema = {
-  //   "@context": "https://schema.org",
-  //   "@type": "ProfessionalService",
-  //   name: "NEXTGEN BUSINESS CONSULTANCY PRIVATE LIMITED",
-  //   image: "https://www.nextgenbusiness.co.in/Next-Gen-Logo.png",
-  //   "@id": "https://www.nextgenbusiness.co.in/about",
-  //   url: "https://nextgenbusiness.co.in/",
-  //   telephone: "+919898298149",
-  //   address: {
-  //     "@type": "PostalAddress",
-  //     streetAddress: "Drive in Road",
-  //     addressLocality: "Ahmedabad",
-  //     postalCode: "380051",
-  //     addressCountry: "IN",
-  //   },
-  //   geo: {
-  //     "@type": "GeoCoordinates",
-  //     latitude: 23.047053163750352,
-  //     longitude: 72.52960824232856,
-  //   },
-  //   sameAs: [
-  //     "https://www.facebook.com/p/Next-Gen-Business-Consultancy-Private-Limited-61574060610065/",
-  //     "https://www.instagram.com/next_gen_business_consultancy/",
-  //     "https://www.youtube.com/@Next-Gen-business-consultancy",
-  //     "https://in.linkedin.com/company/nextgen-business-consultancy",
-  //   ],
-  // };
-
-  // In layout.jsx, update the organizationSchema to:
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",

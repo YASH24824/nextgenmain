@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-const contact1 = "/assets/contact1.png";
-const Homebg = "/assets/home-bg.png";
+const contact1 = "/assets/contact1.webp";
+const Homebg = "/assets/home-bg.webp";
 
 export default function Hero() {
   return (

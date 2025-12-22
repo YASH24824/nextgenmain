@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-const Privacy = "/assets/privacy-policy.png";
-const Homebg = "/assets/home-bg.png";
+const Privacy = "/assets/privacy-policy.webp";
+const Homebg = "/assets/home-bg.webp";
 
 export default function Hero() {
   return (

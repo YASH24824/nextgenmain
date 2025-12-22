@@ -231,19 +231,19 @@ const OPC = "/assets/opc-registation.webp";
 const Registered = "/assets/registered.webp";
 const GST = "/assets/gst.webp";
 const Compliance = "/assets/compliance.webp";
-const Startup = "/assets/startup.png";
+const Startup = "/assets/startup.webp";
 const MSME = "/assets/msme.webp";
 const Code = "/assets/code.webp";
 const ICEGATE = "/assets/icegate.webp";
-const Seed = "/assets/seed.png";
+const Seed = "/assets/seed.webp";
 const RKVY = "/assets/rkvy.webp";
 const NAIFF = "/assets/naiff.webp";
 const PMEGP = "/assets/pmegp.webp";
 const CGTMSE = "/assets/cgtmse.webp";
-const Mudra = "/assets/mudra.png";
-const SeedSupport = "/assets/seed-support.png";
+const Mudra = "/assets/mudra.webp";
+const SeedSupport = "/assets/seed-support.webp";
 const Project = "/assets/project.webp";
-const VentureCapital = "/assets/venture-capital.png";
+const VentureCapital = "/assets/venture-capital.webp";
 import Image from "next/image";
 
 function Support() {

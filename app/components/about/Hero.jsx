@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-const about = "/assets/about.png";
-const Homebg = "/assets/home-bg.png";
+const about = "/assets/about.webp";
+const Homebg = "/assets/home-bg.webp";
 
 // Load Inter font
 

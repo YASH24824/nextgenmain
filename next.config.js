@@ -171,16 +171,26 @@ const nextConfig = {
             value: "on",
           },
           {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
             key: "X-Content-Type-Options",
             value: "nosniff",
           },
           {
             key: "Referrer-Policy",
             value: "origin-when-cross-origin",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: https://www.google.com https://apis.google.com https://ssl.gstatic.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.youtube.com https://*.google.com https://*.gstatic.com https://youtube.com https://*.doubleclick.net https://*.googleapis.com https://www.googleadservices.com https://tpc.googlesyndication.com https://www.youtubekids.com https://www.youtube-nocookie.com https://www.youtubeeducation.com https://www-onepick-opensocial.googleusercontent.com https://www.clarity.ms https://scripts.clarity.ms",
+              "script-src-elem 'self' 'unsafe-inline' blob: https://www.google.com https://apis.google.com https://ssl.gstatic.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.youtube.com https://*.google.com https://*.gstatic.com https://youtube.com https://*.doubleclick.net https://*.googleapis.com https://www.googleadservices.com https://tpc.googlesyndication.com https://www.youtubekids.com https://www.youtube-nocookie.com https://www.youtubeeducation.com https://www-onepick-opensocial.googleusercontent.com https://www.clarity.ms https://scripts.clarity.ms",
+              "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://*.youtube.com",
+              "media-src 'self' https://*.googlevideo.com https://*.youtube.com https://www.youtube-nocookie.com blob: data:",
+              "connect-src 'self' https://www.google.com https://apis.google.com https://*.google.com https://*.googleapis.com https://*.youtube.com https://www.youtube.com https://www.clarity.ms https://*.clarity.ms https://www.googletagmanager.com https://www.google-analytics.com https://leads.nextgenconsultancy.in",
+              "img-src 'self' data: blob: https: https://i.ytimg.com https://www.youtube-nocookie.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' data: https://fonts.gstatic.com",
+            ].join("; "),
           },
         ],
       },

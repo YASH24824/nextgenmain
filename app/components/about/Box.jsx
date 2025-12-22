@@ -1,8 +1,8 @@
-const group236 = "/assets/236.png";
-const group237 = "/assets/237.png";
-const group238 = "/assets/238.png";
-const group239 = "/assets/239.png";
-const group244 = "/assets/244.png";
+const group236 = "/assets/236.webp";
+const group237 = "/assets/237.webp";
+const group238 = "/assets/238.webp";
+const group239 = "/assets/239.webp";
+const group244 = "/assets/244.webp";
 const vector2 = "/assets/Vector.svg";
 
 import Image from "next/image";

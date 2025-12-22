@@ -122,14 +122,15 @@ export default function FiveCardCarousel() {
                 {mounted && (
                   <iframe
                     ref={(el) => (videoRefs.current[i] = el)}
-                    src={`https://www.youtube.com/embed/${getVideoId(
+                    src={`https://www.youtube-nocookie.com/embed/${getVideoId(
                       card.url
                     )}?enablejsapi=1&mute=1&loop=1&playlist=${getVideoId(
                       card.url
-                    )}`}
+                    )}&playsinline=1&rel=0&modestbranding=1&origin=https://www.nextgenbusiness.co.in`}
+                    referrerPolicy="origin"
                     title={`Video ${card.id}`}
                     frameBorder="0"
-                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     className="w-full h-full rounded-[25px]"
                   />

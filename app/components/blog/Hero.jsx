@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
 import { motion } from "framer-motion";
-const blog1 = "/assets/blog.png";
-const Homebg = "/assets/home-bg.png";
+const blog1 = "/assets/blog.webp";
+const Homebg = "/assets/home-bg.webp";
 
 export default function Hero() {
   return (

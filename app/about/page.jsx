@@ -35,7 +35,7 @@ export const metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.nextgenbusiness.co.in/og-image-about.jpg", // About page OG image
+        url: "https://www.nextgenbusiness.co.in/og-image-about.webp", // About page OG image
         width: 1200,
         height: 630,
         alt: "NextGen Consultancy - About Us",

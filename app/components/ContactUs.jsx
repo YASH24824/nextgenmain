@@ -255,7 +255,7 @@ const ContactUs = ({ onClose, selectedService }) => {
             <div className="absolute bottom-10 right-10 w-32 h-32 rounded-full bg-white"></div>
           </div>
 
-          <div className="relative z-10 p-8 flex flex-col justify-between text-white">
+          <div className="relative z-10 p-6 flex flex-col justify-between text-white">
             <div>
               <h2 className="text-2xl font-bold mb-3">
                 Apply for {selectedService}
@@ -265,7 +265,7 @@ const ContactUs = ({ onClose, selectedService }) => {
                 hours.
               </p>
 
-              <div className="space-y-4 mt-6">
+              <div className="space-y-3 mt-6">
                 <div className="flex items-start">
                   <div className="bg-white/20 p-1.5 rounded-md mr-3">
                     <svg
@@ -347,7 +347,7 @@ const ContactUs = ({ onClose, selectedService }) => {
         {/* Right Column - Form Section */}
         <div className="md:w-3/5">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#1c3a6d] to-[#4975b8] p-5 text-white md:rounded-tr-2xl">
+          <div className="bg-gradient-to-r from-[#1c3a6d] to-[#4975b8] p-4 text-white md:rounded-tr-2xl">
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="text-lg font-bold">Application Form</h3>
@@ -364,7 +364,7 @@ const ContactUs = ({ onClose, selectedService }) => {
           </div>
 
           {/* Form Container */}
-          <div className="p-5 md:p-6 max-h-[70vh] overflow-y-auto">
+          <div className="p-4 md:p-5">
             {/* Status messages */}
             {status.message && (
               <div
@@ -379,11 +379,11 @@ const ContactUs = ({ onClose, selectedService }) => {
             )}
 
             {/* Form - Compact layout */}
-            <form onSubmit={handleSubmit} className="space-y-4 text-black">
+            <form onSubmit={handleSubmit} className="space-y-3 text-black">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Name Field */}
                 <div>
-                  <label className="block text-gray-700 font-medium mb-1 text-sm">
+                  <label className="block text-gray-700 font-medium mb-1 text-xs">
                     Name *
                   </label>
                   <input
@@ -393,7 +393,7 @@ const ContactUs = ({ onClose, selectedService }) => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-[#4975b8] focus:border-transparent outline-none transition-all text-sm ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#4975b8] focus:border-transparent outline-none transition-all text-sm ${
                       errors.name ? "border-red-500" : "border-gray-300"
                     }`}
                   />
@@ -404,7 +404,7 @@ const ContactUs = ({ onClose, selectedService }) => {
 
                 {/* Phone Field */}
                 <div>
-                  <label className="block text-gray-700 font-medium mb-1 text-sm">
+                  <label className="block text-gray-700 font-medium mb-1 text-xs">
                     Phone *
                   </label>
                   <input
@@ -416,7 +416,7 @@ const ContactUs = ({ onClose, selectedService }) => {
                     required
                     pattern="[0-9]{10,15}"
                     title="Phone number should be between 10 and 15 digits"
-                    className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-[#4975b8] focus:border-transparent outline-none transition-all text-sm ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#4975b8] focus:border-transparent outline-none transition-all text-sm ${
                       errors.phone ? "border-red-500" : "border-gray-300"
                     }`}
                   />
@@ -428,7 +428,7 @@ const ContactUs = ({ onClose, selectedService }) => {
 
               {/* Email Field - Full width */}
               <div>
-                <label className="block text-gray-700 font-medium mb-1 text-sm">
+                <label className="block text-gray-700 font-medium mb-1 text-xs">
                   Email Address *
                 </label>
                 <input
@@ -440,7 +440,7 @@ const ContactUs = ({ onClose, selectedService }) => {
                   required
                   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                   title="Please enter a valid email address"
-                  className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-[#4975b8] focus:border-transparent outline-none transition-all text-sm ${
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#4975b8] focus:border-transparent outline-none transition-all text-sm ${
                     errors.email ? "border-red-500" : "border-gray-300"
                   }`}
                 />
@@ -451,7 +451,7 @@ const ContactUs = ({ onClose, selectedService }) => {
 
               {/* Message Field */}
               <div>
-                <label className="block text-gray-700 font-medium mb-1 text-sm">
+                <label className="block text-gray-700 font-medium mb-1 text-xs">
                   Message *
                 </label>
                 <textarea
@@ -459,9 +459,9 @@ const ContactUs = ({ onClose, selectedService }) => {
                   placeholder="Tell us about your funding needs..."
                   value={formData.message}
                   onChange={handleChange}
-                  rows="3"
+                  rows="2"
                   required
-                  className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-[#4975b8] focus:border-transparent outline-none transition-all text-sm ${
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#4975b8] focus:border-transparent outline-none transition-all text-sm ${
                     errors.message ? "border-red-500" : "border-gray-300"
                   }`}
                 />
@@ -518,7 +518,7 @@ const ContactUs = ({ onClose, selectedService }) => {
                 </div>
               )} */}
               {captchaQuestion && (
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+                <div className="bg-gray-50 p-3 rounded-lg border border-gray-200 mb-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
                       <div className="flex items-center justify-center w-5 h-5 bg-blue-600 rounded">

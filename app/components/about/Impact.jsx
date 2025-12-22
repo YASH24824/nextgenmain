@@ -3,10 +3,10 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-const Impact1 = "/assets/Impact1.png";
-const Impact2 = "/assets/Impact2.png";
-const Impact3 = "/assets/Impact3.png";
-const Impact4 = "/assets/Impact4.png";
+const Impact1 = "/assets/Impact1.webp";
+const Impact2 = "/assets/Impact2.webp";
+const Impact3 = "/assets/Impact3.webp";
+const Impact4 = "/assets/Impact4.webp";
 
 const Impact = () => {
   const impacts = [

@@ -1,6 +1,6 @@
 // app/not-found.jsx
 import Image from "next/image";
-const notfoundInmage = "/assets/404.png";
+const notfoundInmage = "/assets/404.webp";
 import "./privacy-policy/page.css";
 import { Header } from "./components/Header";
 import Footer from "./components/Footer";
@@ -55,14 +55,14 @@ export default function NotFound() {
                     <path
                       d="M9.57159 7.31981L13.1948 4.15991L9.57159 1"
                       stroke="white"
-                      stroke-width="0.679356"
-                      stroke-linecap="round"
+                      strokeWidth="0.679356"
+                      strokeLinecap="round"
                     />
                     <path
                       d="M12.7754 4.23535L0.999939 4.23535"
                       stroke="white"
-                      stroke-width="0.679356"
-                      stroke-linecap="round"
+                      strokeWidth="0.679356"
+                      strokeLinecap="round"
                     />
                   </svg>
                 </span>

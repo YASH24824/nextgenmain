@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-const Collateralfree = "/assets/hotservice1.png";
-const Naiff = "/assets/hotservice2.png";
-const SeedFund = "/assets/hotservice3.png";
-const GrantFund = "/assets/hotservice4.png";
-const StartupSeed = "/assets/hotservice5.png";
-const Pmegp = "/assets/hotservice6.png";
+const Collateralfree = "/assets/hotservice1.webp";
+const Naiff = "/assets/hotservice2.webp";
+const SeedFund = "/assets/hotservice3.webp";
+const GrantFund = "/assets/hotservice4.webp";
+const StartupSeed = "/assets/hotservice5.webp";
+const Pmegp = "/assets/hotservice6.webp";
 import { motion } from "framer-motion";
 import ContactUs from "./ContactUs"; // Make sure this path is correct
 

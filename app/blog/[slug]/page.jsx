@@ -20,7 +20,7 @@ export async function generateMetadata({ params }) {
 
   const baseUrl = "https://www.nextgenbusiness.co.in";
   const blogUrl = `${baseUrl}/blog/${slug}`;
-  const imageUrl = `${baseUrl}/Next-Gen-Logo.png`;
+  const imageUrl = `${baseUrl}/Next-Gen-Logo.webp`;
   const publishedTime = blog.publishedDate
     ? `${blog.publishedDate}T00:00:00+05:30`
     : undefined;
@@ -91,7 +91,7 @@ export default async function BlogPostPage({ params }) {
 
   const baseUrl = "https://www.nextgenbusiness.co.in";
   const blogUrl = `${baseUrl}/blog/${slug}`;
-  const imageUrl = `${baseUrl}/Next-Gen-Logo.png`;
+  const imageUrl = `${baseUrl}/Next-Gen-Logo.webp`;
   const publishedTime = blog.publishedDate
     ? `${blog.publishedDate}T00:00:00+05:30`
     : new Date().toISOString();

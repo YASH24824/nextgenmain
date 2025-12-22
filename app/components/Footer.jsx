@@ -11,7 +11,7 @@ export default function Footer() {
         {/* --- Column 1: Logo + Tagline --- */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left gap-6">
           <Image
-            src="/images/whiteLogo.png"
+            src="/images/whiteLogo.webp"
             alt="Next-Gen Logo"
             width={220}
             height={60}

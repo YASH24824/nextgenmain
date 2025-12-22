@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, use } from "react";
-const Homebg = "/assets/home-bg.png";
+const Homebg = "/assets/home-bg.webp";
 import { notFound } from "next/navigation";
 import { businessTypes } from "../data/businessData";
 import { Header } from "@/app/components/Header";
