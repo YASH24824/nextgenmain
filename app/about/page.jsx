@@ -1,12 +1,10 @@
 import Hero from "../components/about/Hero";
-import Services from "../components/about/Services";
 import Timeline from "../components/about/Timeline";
 import Values from "../components/about/Values";
 import Process from "../components/about/Process";
 import Impact from "../components/about/Impact";
 import CTA from "../components/about/CTA";
 import FestivalCelebrationSection from "../components/about/FestivalCelebrationSection";
-import TeamHierarchySection from "../components/about/TeamHierarchySection";
 import Script from "next/script";
 
 import "./page.css";
@@ -84,12 +82,10 @@ export default function About() {
       />
       <Hero />
       <FestivalCelebrationSection />
-      {/* <Services /> */}
       <Timeline />
       <Values />
       <Process />
       <Impact />
-      {/* <TeamHierarchySection /> */}
       <CTA />
     </>
   );

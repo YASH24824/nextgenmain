@@ -2,6 +2,41 @@
 
 import { useState } from "react";
 
+// Ensure the domain we send to the leads API is always in a consistent format
+const normalizeDomain = (domain) => {
+  const fallback = "https://nextgenbusiness.co.in";
+  if (!domain) return fallback;
+  if (domain.startsWith("http://") || domain.startsWith("https://")) {
+    return domain;
+  }
+  return `https://${domain}`;
+};
+
+// Safely parse JSON responses, with robust logging for production debugging
+const parseJsonSafely = async (response, context = "lead-api") => {
+  let data = {};
+  try {
+    const contentType = response.headers.get("content-type") || "";
+    const text = await response.text();
+
+    if (text && contentType.includes("application/json")) {
+      data = JSON.parse(text);
+    } else if (text) {
+      console.error("Non-JSON response from API", {
+        context,
+        status: response.status,
+        statusText: response.statusText,
+        contentType,
+        bodyPreview: text.substring(0, 500),
+      });
+    }
+  } catch (error) {
+    console.error("Error parsing JSON response", { context, error });
+  }
+
+  return data || {};
+};
+
 const Form = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -85,7 +120,7 @@ const Form = () => {
       phone: formData.mobile.trim(),
       message: message,
       captchaAnswer: "", // No CAPTCHA for this form
-      domain: process.env.NEXT_PUBLIC_DOMAIN,
+      domain: normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN),
     };
 
     try {
@@ -94,27 +129,44 @@ const Form = () => {
         headers: {
           "Content-Type": "application/json",
           "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
-          Origin: typeof window !== "undefined" ? window.location.origin : "",
         },
         credentials: "include",
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      const data = await parseJsonSafely(response, "solution-form-submit");
 
-      if (response.ok) {
-        setFormData({ name: "", mobile: "", company: "", email: "" });
-        setErrors({});
-        setStatus({
-          message: "Thank you! Your message has been sent successfully.",
-          error: false,
+      if (!response.ok) {
+        const rawMessage =
+          data?.error ||
+          data?.message ||
+          (response.status
+            ? `Server error: ${response.status} ${response.statusText || ""}`
+            : "");
+
+        const errorMessage =
+          rawMessage || "Something went wrong. Please try again later.";
+
+        console.error("Solution form submission API error", {
+          status: response.status,
+          statusText: response.statusText,
+          payload,
+          error: errorMessage,
         });
-      } else {
+
         setStatus({
-          message: data.error || "Something went wrong. Please try again later.",
+          message: errorMessage,
           error: true,
         });
+        return;
       }
+
+      setFormData({ name: "", mobile: "", company: "", email: "" });
+      setErrors({});
+      setStatus({
+        message: "Thank you! Your message has been sent successfully.",
+        error: false,
+      });
     } catch (error) {
       console.error("Form submission error:", error);
       setStatus({
