@@ -13,8 +13,8 @@ const Address = () => {
     {
       title: "Head Office",
       address:
-        "Silver Redience-2, Science City Road, Opp, Empire Business House, Sola, Ahmedabad, Gujarat, 380060",
-      mapLink: "#",
+        "2ND FLOOR, PRESIDENT PLAZA, SG HIGHWAY, THALTEJ, AHMEDABAD - 380054",
+      mapLink: "https://maps.app.goo.gl/cnYdGCiz3KNh675D8",
       city: "Ahmedabad",
       icon: MapPin,
       gradient: "from-[#245586] to-[#76a5d3]",
@@ -28,15 +28,15 @@ const Address = () => {
       icon: MapPin,
       gradient: "from-[#245586] to-[#76a5d3]",
     },
-    // {
-    //   title: "Surat Office",
-    //   address:
-    //     "555, Laxmi Enclave 2, Laxmi Circle, Opp. Gajera School, Katargam, Surat, Gujarat - 395004",
-    //   mapLink: "#",
-    //   city: "Surat",
-    //   icon: MapPin,
-    //   gradient: "from-[#245586] to-[#76a5d3]",
-    // },
+    {
+      title: "Pune Office",
+      address:
+        "B - 102, Trade Centre, Ahura Builders, N Main Rd, Liberty Phase 2, Ragvilas Society, Koregaon Park, Pune, Maharashtra 411001",
+      mapLink: "https://maps.app.goo.gl/HELiSppNtAmZaQLHA",
+      city: "Pune",
+      icon: MapPin,
+      gradient: "from-[#245586] to-[#76a5d3]",
+    },
     {
       title: "Chennai Office",
       address:
