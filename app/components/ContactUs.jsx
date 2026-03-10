@@ -96,7 +96,7 @@ const ContactUs = ({ onClose, selectedService }) => {
       const phonePattern = /^[0-9]{10,15}$/;
       if (value && !phonePattern.test(value)) {
         e.target.setCustomValidity(
-          "Phone number should be between 10 and 15 digits"
+          "Phone number should be between 10 and 15 digits",
         );
         setErrors((prev) => ({
           ...prev,
@@ -159,14 +159,21 @@ const ContactUs = ({ onClose, selectedService }) => {
         message: `${formData.message}, Service Type : ${selectedService}`,
       };
 
-      const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
+      // const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+      //     "Origin": `https://${normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN)}`,
+      //   },
+      //   credentials: "include",
+      //   body: JSON.stringify(payload),
+      // });
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
-          "Origin": `https://${normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN)}`,
         },
-        credentials: "include",
         body: JSON.stringify(payload),
       });
 
@@ -208,8 +215,7 @@ const ContactUs = ({ onClose, selectedService }) => {
       setErrors({});
       setStatus({
         loading: false,
-        message:
-          "Thank you! Your application has been submitted successfully.",
+        message: "Thank you! Your application has been submitted successfully.",
         error: false,
       });
     } catch (error) {
