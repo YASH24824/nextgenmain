@@ -7,6 +7,9 @@ import React, { useRef, useState } from "react";
 const image1 = "/assets/ganesh/1.webp";
 const image21 = "/assets/diwali/1.webp";
 const image46 = "/assets/activites/1.webp";
+const image72 = "/assets/cricket/1.webp";
+const image78 = "/assets/pongal/1.webp";
+const image83 = "/assets/holi/1.webp";
 
 /* ---------------------- FEATURES ---------------------- */
 const features = [
@@ -59,6 +62,30 @@ export const celebrationData = [
     category: "Events",
     date: "November 29, 2025",
   },
+  {
+    id: "cricket",
+    slug: "cricket-tournament",
+    img: image72,
+    title: "Cricket Tournament at Nextgen",
+    category: "Events",
+    date: "Jan, 2026",
+  },
+  {
+    id: "pongal",
+    slug: "pongal-celebrations",
+    img: image78,
+    title: "Pongal Celebrations at Nextgen",
+    category: "Events",
+    date: "January 14, 2025",
+  },
+  {
+    id: "holi",
+    slug: "holi-celebrations",
+    img: image83,
+    title: "Holi Celebrations at Nextgen",
+    category: "Events",
+    date: "March 14, 2026",
+  },
 ];
 
 /* ---------------------- MOTION VARIANTS ---------------------- */
@@ -108,7 +135,7 @@ function TiltCardWrapper({ children, className = "", onMouseFactor = 8 }) {
 
   const transformStyle = {
     transform: `perspective(900px) rotateX(${ty.toFixed(
-      2
+      2,
     )}deg) rotateY(${tx.toFixed(2)}deg) translateZ(0)`,
     willChange: "transform",
     transition: "transform 0.1s ease-out",

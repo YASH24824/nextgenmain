@@ -1,263 +1,705 @@
 "use client";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 
-const image1 = "/assets/ganesh/1.webp";
-const image2 = "/assets/ganesh/2.webp";
-const image6 = "/assets/ganesh/6.webp";
-const image7 = "/assets/ganesh/7.webp";
-const image8 = "/assets/ganesh/8.webp";
-const image9 = "/assets/ganesh/9.webp";
-const image10 = "/assets/ganesh/10.webp";
-const image12 = "/assets/ganesh/12.webp";
-const image13 = "/assets/ganesh/13.webp";
-const image14 = "/assets/ganesh/14.webp";
-const image15 = "/assets/ganesh/15.webp";
-const image16 = "/assets/ganesh/16.webp";
-const image17 = "/assets/ganesh/17.webp";
-const image18 = "/assets/ganesh/18.webp";
+// ─────────────────────────────────────────────────────────────────
+// ASSETS — edit arrays to match your actual files
+// ─────────────────────────────────────────────────────────────────
+const ganeshSrcs = [
+  "/assets/ganesh/1.webp",
+  "/assets/ganesh/2.webp",
+  "/assets/ganesh/6.webp",
+  "/assets/ganesh/7.webp",
+  "/assets/ganesh/8.webp",
+  "/assets/ganesh/9.webp",
+  "/assets/ganesh/10.webp",
+  "/assets/ganesh/12.webp",
+  "/assets/ganesh/13.webp",
+  "/assets/ganesh/14.webp",
+  "/assets/ganesh/15.webp",
+  "/assets/ganesh/16.webp",
+  "/assets/ganesh/17.webp",
+  "/assets/ganesh/18.webp",
+];
+const diwaliSrcs = [
+  "/assets/diwali/1.webp",
+  "/assets/diwali/2.webp",
+  "/assets/diwali/3.webp",
+  "/assets/diwali/4.webp",
+  "/assets/diwali/5.webp",
+  "/assets/diwali/6.webp",
+  "/assets/diwali/7.webp",
+  "/assets/diwali/8.webp",
+  "/assets/diwali/9.webp",
+  "/assets/diwali/10.webp",
+  "/assets/diwali/11.webp",
+  "/assets/diwali/12.webp",
+  "/assets/diwali/13.webp",
+  "/assets/diwali/14.webp",
+  "/assets/diwali/15.webp",
+  "/assets/diwali/16.webp",
+  "/assets/diwali/17.webp",
+  "/assets/diwali/18.webp",
+  "/assets/diwali/19.webp",
+  "/assets/diwali/20.webp",
+  "/assets/diwali/21.webp",
+  "/assets/diwali/22.webp",
+  "/assets/diwali/23.webp",
+  "/assets/diwali/24.webp",
+  "/assets/diwali/25.webp",
+];
+const activitiesSrcs = [
+  "/assets/activites/1.webp",
+  "/assets/activites/2.webp",
+  "/assets/activites/3.webp",
+  "/assets/activites/4.webp",
+  "/assets/activites/5.webp",
+  "/assets/activites/6.webp",
+  "/assets/activites/7.webp",
+  "/assets/activites/8.webp",
+  "/assets/activites/9.webp",
+  "/assets/activites/10.webp",
+  "/assets/activites/11.webp",
+  "/assets/activites/12.webp",
+  "/assets/activites/13.webp",
+  "/assets/activites/17.webp",
+  "/assets/activites/14.webp",
+  "/assets/activites/15.webp",
+  "/assets/activites/16.webp",
+  "/assets/activites/18.webp",
+  "/assets/activites/19.webp",
+  "/assets/activites/20.webp",
+  "/assets/activites/21.webp",
+  "/assets/activites/22.webp",
+  "/assets/activites/23.webp",
+  "/assets/activites/24.webp",
+  "/assets/activites/25.webp",
+  "/assets/activites/26.webp",
+];
+const pongalSrcs = [
+  "/assets/pongal/1.webp",
+  "/assets/pongal/2.webp",
+  "/assets/pongal/3.webp",
+  "/assets/pongal/4.webp",
+  "/assets/pongal/5.webp",
+  "/assets/pongal/6.webp",
+];
+const cricketSrcs = [
+  "/assets/cricket/1.webp",
+  "/assets/cricket/2.webp",
+  "/assets/cricket/3.webp",
+  "/assets/cricket/4.webp",
+  "/assets/cricket/5.webp",
+];
+const holiSrcs = [
+  "/assets/holi/1.webp",
+  "/assets/holi/2.webp",
+  "/assets/holi/3.webp",
+  "/assets/holi/4.webp",
+  "/assets/holi/5.webp",
+  "/assets/holi/6.webp",
+];
 
-const image21 = "/assets/diwali/1.webp";
-const image22 = "/assets/diwali/2.webp";
-const image23 = "/assets/diwali/3.webp";
-const image24 = "/assets/diwali/4.webp";
-const image25 = "/assets/diwali/5.webp";
-const image26 = "/assets/diwali/6.webp";
-const image27 = "/assets/diwali/7.webp";
-const image28 = "/assets/diwali/8.webp";
-const image29 = "/assets/diwali/9.webp";
-const image30 = "/assets/diwali/10.webp";
+// ─────────────────────────────────────────────────────────────────
+// THEMES
+// ─────────────────────────────────────────────────────────────────
+const THEMES = {
+  ganesh: {
+    primary: "#c2701f",
+    soft: "#fef5e7",
+    emoji: "🪔",
+    label: "Festival",
+  },
+  diwali: {
+    primary: "#7c3aed",
+    soft: "#f5f3ff",
+    emoji: "✨",
+    label: "Festival",
+  },
+  activities: {
+    primary: "#0369a1",
+    soft: "#e0f2fe",
+    emoji: "🎯",
+    label: "Events",
+  },
+  pongal: {
+    primary: "#15803d",
+    soft: "#dcfce7",
+    emoji: "🌾",
+    label: "Festival",
+  },
+  cricket: {
+    primary: "#1e40af",
+    soft: "#dbeafe",
+    emoji: "🏏",
+    label: "Sports",
+  },
+  holi: { primary: "#be185d", soft: "#fce7f3", emoji: "🎨", label: "Festival" },
+};
 
-const image31 = "/assets/diwali/11.webp";
-const image32 = "/assets/diwali/12.webp";
-const image33 = "/assets/diwali/13.webp";
-const image34 = "/assets/diwali/14.webp";
-const image35 = "/assets/diwali/15.webp";
-const image36 = "/assets/diwali/16.webp";
-const image37 = "/assets/diwali/17.webp";
-const image38 = "/assets/diwali/18.webp";
-const image39 = "/assets/diwali/19.webp";
-const image40 = "/assets/diwali/20.webp";
-
-const image41 = "/assets/diwali/21.webp";
-const image42 = "/assets/diwali/22.webp";
-const image43 = "/assets/diwali/23.webp";
-const image44 = "/assets/diwali/24.webp";
-const image45 = "/assets/diwali/25.webp";
-
-const img46 = "/assets/activites/1.webp";
-const img47 = "/assets/activites/2.webp";
-const img48 = "/assets/activites/3.webp";
-const img49 = "/assets/activites/4.webp";
-const img50 = "/assets/activites/5.webp";
-const img51 = "/assets/activites/6.webp";
-const img52 = "/assets/activites/7.webp";
-const img53 = "/assets/activites/8.webp";
-const img54 = "/assets/activites/9.webp";
-const img55 = "/assets/activites/10.webp";
-const img56 = "/assets/activites/11.webp";
-const img57 = "/assets/activites/12.webp";
-const img58 = "/assets/activites/13.webp";
-const img59 = "/assets/activites/14.webp";
-const img60 = "/assets/activites/15.webp";
-const img61 = "/assets/activites/16.webp";
-const img62 = "/assets/activites/17.webp";
-const img63 = "/assets/activites/18.webp";
-const img64 = "/assets/activites/19.webp";
-const img65 = "/assets/activites/20.webp";
-const img66 = "/assets/activites/21.webp";
-const img67 = "/assets/activites/22.webp";
-const img68 = "/assets/activites/23.webp";
-const img69 = "/assets/activites/24.webp";
-const img70 = "/assets/activites/25.webp";
-const img71 = "/assets/activites/26.webp";
-
+// ─────────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────────
 const celebrationData = [
   {
     id: "ganesh",
     slug: "ganesh-chaturthi-celebrations",
-    img: image1,
-    title: "Ganesh Chaturthi Celebrations at NextGen",
-    category: "Events",
+    title: "Ganesh Chaturthi",
+    subtitle: "Celebrations at NextGen",
     date: "September 27, 2025",
-    gallery: [
-      { src: image1, height: 600 },
-      { src: image2, height: 450 },
-      // { src: image3, height: 700 },
-      // { src: image4, height: 500 },
-      // { src: image5, height: 650 },
-      { src: image6, height: 550 },
-      { src: image7, height: 400 },
-      { src: image8, height: 750 },
-      { src: image9, height: 480 },
-      { src: image10, height: 600 },
-      { src: image12, height: 680 },
-      { src: image13, height: 430 },
-      { src: image14, height: 590 },
-      { src: image15, height: 710 },
-      { src: image16, height: 470 },
-      { src: image17, height: 640 },
-      { src: image18, height: 560 },
-    ],
+    gallery: ganeshSrcs,
   },
   {
     id: "diwali",
     slug: "diwali-celebrations",
-    img: image21,
-    title: "Diwali Celebrations at NextGen",
-    category: "Events",
+    title: "Diwali",
+    subtitle: "Celebrations at NextGen",
     date: "October 20, 2025",
-    gallery: [
-      { src: image21, height: 620 },
-      { src: image22, height: 480 },
-      { src: image23, height: 700 },
-      { src: image24, height: 540 },
-      { src: image25, height: 660 },
-      { src: image26, height: 520 },
-      { src: image27, height: 430 },
-      { src: image28, height: 760 },
-      { src: image29, height: 500 },
-      { src: image30, height: 610 },
-      { src: image31, height: 690 },
-      { src: image32, height: 450 },
-      { src: image33, height: 580 },
-      { src: image34, height: 720 },
-      { src: image35, height: 490 },
-      { src: image36, height: 640 },
-      { src: image37, height: 530 },
-      { src: image38, height: 750 },
-      { src: image39, height: 470 },
-      { src: image40, height: 600 },
-      { src: image41, height: 680 },
-      { src: image42, height: 520 },
-      { src: image43, height: 710 },
-      { src: image44, height: 460 },
-      { src: image45, height: 590 },
-    ],
+    gallery: diwaliSrcs,
   },
   {
     id: "activities",
     slug: "events-activities",
-    img: img46, // Fixed: Changed from activity1 to img46
-    title: "Events & Activities at NextGen", // Fixed: Spelling correction
-    category: "Events",
+    title: "Events & Activities",
+    subtitle: "Fun at NextGen",
     date: "November 29, 2025",
-    gallery: [
-      { src: img46, height: 650 },
-      { src: img47, height: 480 },
-      { src: img48, height: 700 },
-      { src: img49, height: 520 },
-      { src: img50, height: 610 },
-      { src: img51, height: 450 },
-      { src: img52, height: 680 },
-      { src: img53, height: 540 },
-      { src: img54, height: 620 },
-      { src: img55, height: 500 },
-      { src: img56, height: 660 },
-      { src: img57, height: 470 },
-      { src: img58, height: 720 },
-      { src: img62, height: 710 },
-      { src: img59, height: 560 },
-      { src: img60, height: 640 },
-      { src: img61, height: 490 },
-      { src: img63, height: 530 },
-      { src: img64, height: 600 },
-      { src: img65, height: 460 },
-      { src: img66, height: 680 },
-      { src: img67, height: 510 },
-      { src: img68, height: 730 },
-      { src: img69, height: 550 },
-      { src: img70, height: 620 },
-      { src: img71, height: 480 },
-    ],
+    gallery: activitiesSrcs,
+  },
+  {
+    id: "pongal",
+    slug: "pongal-celebrations",
+    title: "Pongal",
+    subtitle: "Harvest Festival at NextGen",
+    date: "January 14, 2026",
+    gallery: pongalSrcs,
+  },
+  {
+    id: "cricket",
+    slug: "cricket-tournament",
+    title: "Cricket Tournament",
+    subtitle: "Team Spirit at NextGen",
+    date: "January 2026",
+    gallery: cricketSrcs,
+  },
+  {
+    id: "holi",
+    slug: "holi-celebrations",
+    title: "Holi",
+    subtitle: "Festival of Colours at NextGen",
+    date: "March 14, 2026",
+    gallery: holiSrcs,
   },
 ];
 
+// ─────────────────────────────────────────────────────────────────
+// ASPECT RATIOS — a varied but controlled rhythm
+// Every image gets a deterministic ratio so columns pack perfectly
+// and there is zero dead space at any count.
+// ─────────────────────────────────────────────────────────────────
+const RATIO_CYCLE = [
+  "4/3", // landscape
+  "3/4", // portrait
+  "1/1", // square
+  "3/4", // portrait
+  "4/3", // landscape
+  "1/1", // square
+  "16/9", // wide
+  "3/4", // portrait
+];
+
+function getRatio(index, total) {
+  // For very small galleries keep things uniform
+  if (total <= 3) return "4/3";
+  if (total === 4) return index === 0 ? "4/3" : "1/1";
+  return RATIO_CYCLE[index % RATIO_CYCLE.length];
+}
+
+// How many columns to use
+function getColumns(total) {
+  if (total <= 2) return 2;
+  if (total <= 4) return 2;
+  if (total <= 6) return 3;
+  return 4; // 7+
+}
+
+// ─────────────────────────────────────────────────────────────────
+// MASONRY COLUMN BUILDER
+// Splits image list into N balanced columns
+// ─────────────────────────────────────────────────────────────────
+function buildColumns(srcs, numCols) {
+  const cols = Array.from({ length: numCols }, () => []);
+  srcs.forEach((src, i) => cols[i % numCols].push({ src, originalIndex: i }));
+  return cols;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// SINGLE MASONRY CARD — uses padding-bottom trick for zero gap
+// ─────────────────────────────────────────────────────────────────
+function MasonryCard({ src, originalIndex, total, title, theme, onOpen }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px -40px 0px" });
+  const ratio = getRatio(originalIndex, total);
+  const isHero = originalIndex === 0 && total >= 5;
+
+  // padding-bottom % = (h/w) * 100
+  const [h, w] = ratio.split("/").map(Number);
+  const pb = ((h / w) * 100).toFixed(2);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 24 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{
+        duration: 0.5,
+        delay: Math.min(originalIndex * 0.04, 0.35),
+        ease: [0.215, 0.61, 0.355, 1],
+      }}
+      className="relative group overflow-hidden cursor-zoom-in mb-3 rounded-xl"
+      style={{
+        boxShadow: isHero
+          ? `0 6px 30px ${theme.primary}30`
+          : "0 2px 12px rgba(0,0,0,0.08)",
+      }}
+      onClick={() => onOpen(originalIndex)}
+    >
+      {/* Intrinsic-ratio box — no white gaps ever */}
+      <div
+        className="relative w-full overflow-hidden"
+        style={{ paddingBottom: `${pb}%` }}
+      >
+        <Image
+          src={src}
+          alt={`${title} — photo ${originalIndex + 1}`}
+          fill
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          priority={originalIndex < 6}
+          loading={originalIndex < 6 ? undefined : "lazy"}
+        />
+
+        {/* Hover gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+        {/* Hero pill */}
+        {isHero && (
+          <div
+            className="absolute top-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide"
+            style={{
+              background: `${theme.primary}dd`,
+              backdropFilter: "blur(4px)",
+            }}
+          >
+            {theme.emoji} Featured
+          </div>
+        )}
+
+        {/* Bottom bar on hover */}
+        <div className="absolute bottom-0 left-0 right-0 px-3 py-2.5 flex items-center justify-between opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+          <span className="text-white/75 text-[10px] font-bold tracking-widest uppercase">
+            {originalIndex + 1} / {total}
+          </span>
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center"
+            style={{ background: theme.primary }}
+          >
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// LIGHTBOX
+// ─────────────────────────────────────────────────────────────────
+function Lightbox({
+  gallery,
+  title,
+  date,
+  index,
+  onClose,
+  onPrev,
+  onNext,
+  theme,
+}) {
+  const len = gallery.length;
+  return (
+    <AnimatePresence>
+      {index !== null && (
+        <motion.div
+          key="lb"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18 }}
+          className="fixed inset-0 z-[200] flex items-center justify-center"
+          style={{
+            background: "rgba(6,6,10,0.95)",
+            backdropFilter: "blur(10px)",
+          }}
+          onClick={onClose}
+        >
+          {/* Close */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-5 w-9 h-9 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-colors text-lg"
+            style={{ background: "rgba(255,255,255,0.1)" }}
+          >
+            ✕
+          </button>
+
+          {/* Counter */}
+          <div className="absolute top-5 left-1/2 -translate-x-1/2 flex items-center gap-1 text-sm select-none">
+            <span className="font-bold" style={{ color: theme.primary }}>
+              {index + 1}
+            </span>
+            <span className="text-white/25 mx-1">/</span>
+            <span className="text-white/40">{len}</span>
+          </div>
+
+          {/* Prev */}
+          <button
+            className="absolute left-3 md:left-5 w-11 h-11 rounded-full flex items-center justify-center text-white/60 hover:text-white text-3xl transition-all select-none"
+            style={{ background: "rgba(255,255,255,0.08)" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onPrev();
+            }}
+          >
+            ‹
+          </button>
+
+          {/* Image */}
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 0.94, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.28, ease: [0.215, 0.61, 0.355, 1] }}
+            className="relative mx-16 md:mx-20 max-w-5xl w-full rounded-2xl overflow-hidden"
+            style={{
+              maxHeight: "84vh",
+              boxShadow: `0 32px 80px rgba(0,0,0,0.75), 0 0 0 1px ${theme.primary}44`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={gallery[index]}
+              alt={`${title} — photo ${index + 1}`}
+              width={1400}
+              height={900}
+              className="w-full object-contain bg-black/20"
+              style={{ maxHeight: "84vh" }}
+              priority
+            />
+            {/* Bottom strip */}
+            <div
+              className="absolute bottom-0 left-0 right-0 px-5 py-3 flex items-center justify-between"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(0,0,0,0.82), transparent)",
+              }}
+            >
+              <div>
+                <p className="text-white font-semibold text-sm">{title}</p>
+                <p className="text-white/40 text-xs mt-0.5">{date}</p>
+              </div>
+              <span
+                className="text-[11px] font-bold px-3 py-1 rounded-full text-white"
+                style={{ background: theme.primary }}
+              >
+                {theme.emoji} {index + 1} of {len}
+              </span>
+            </div>
+          </motion.div>
+
+          {/* Next */}
+          <button
+            className="absolute right-3 md:right-5 w-11 h-11 rounded-full flex items-center justify-center text-white/60 hover:text-white text-3xl transition-all select-none"
+            style={{ background: "rgba(255,255,255,0.08)" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onNext();
+            }}
+          >
+            ›
+          </button>
+
+          {/* Thumbnail strip — small galleries only */}
+          {len <= 12 && (
+            <div
+              className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 px-3 py-2 rounded-xl"
+              style={{
+                background: "rgba(0,0,0,0.5)",
+                backdropFilter: "blur(8px)",
+              }}
+            >
+              {gallery.map((src, i) => (
+                <button
+                  key={i}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                  }}
+                  className="relative flex-shrink-0 rounded-md overflow-hidden transition-all duration-200"
+                  style={{
+                    width: 36,
+                    height: 36,
+                    outline:
+                      i === index ? `2px solid ${theme.primary}` : "none",
+                    outlineOffset: 2,
+                    opacity: i === index ? 1 : 0.4,
+                    transform: i === index ? "scale(1.12)" : "scale(1)",
+                  }}
+                >
+                  <Image
+                    src={src}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="36px"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// MAIN PAGE
+// ─────────────────────────────────────────────────────────────────
 export default function EventsGallery({ params }) {
   const [festival, setFestival] = useState(null);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
   const resolvedParams = use(params);
 
   useEffect(() => {
-    const foundFestival = celebrationData.find((f) => f.slug === resolvedParams.slug);
-    setFestival(foundFestival);
+    const found = celebrationData.find((f) => f.slug === resolvedParams.slug);
+    setFestival(found || null);
   }, [resolvedParams.slug]);
+
+  useEffect(() => {
+    if (lightboxIndex === null || !festival) return;
+    const len = festival.gallery.length;
+    const handler = (e) => {
+      if (e.key === "Escape") setLightboxIndex(null);
+      if (e.key === "ArrowRight") setLightboxIndex((i) => (i + 1) % len);
+      if (e.key === "ArrowLeft") setLightboxIndex((i) => (i - 1 + len) % len);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [lightboxIndex, festival]);
 
   if (!festival) {
     return (
-      <div className="w-full min-h-screen bg-white flex items-center justify-center mt-20">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Festival Not Found
+      <div className="w-full min-h-screen bg-[#f8f7f4] flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <p className="text-5xl">📷</p>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Gallery Not Found
           </h2>
-          <p className="text-gray-600">
-            The festival gallery you&apos;re looking for doesn&apos;t exist.
+          <p className="text-gray-400 text-sm">
+            This event gallery doesn't exist yet.
           </p>
         </div>
       </div>
     );
   }
 
+  const theme = THEMES[festival.id] || THEMES.activities;
+  const total = festival.gallery.length;
+  const numCols = getColumns(total);
+  const columns = buildColumns(festival.gallery, numCols);
+  const len = total;
+
+  // Column wrapper width classes
+  const colWidthClass =
+    {
+      2: "w-1/2",
+      3: "w-1/3",
+      4: "w-1/4",
+    }[numCols] || "w-1/4";
+
   return (
-    <main className="w-full min-h-screen bg-white pt-24 pb-16 px-4">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="text-center mt-10 mb-10"
-        >
-          <motion.h2 className="text-4xl md:text-5xl font-bold text-[#1c4268] mt-4 relative inline-block group">
-            {festival.title}
-            <span className="absolute left-0 -bottom-3 h-1 bg-[#245586] w-0 transition-all duration-500 group-hover:w-full"></span>
-          </motion.h2>
+    <>
+      <main
+        className="w-full min-h-screen pt-24 pb-24"
+        style={{ background: "#f8f7f4" }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          {/* ── HEADER ─────────────────────────────────────────── */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.215, 0.61, 0.355, 1] }}
+            className="mt-10 mb-10"
+          >
+            {/* Meta row */}
+            <div className="flex flex-wrap items-center gap-2.5 mb-5">
+              <span
+                className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full"
+                style={{ background: theme.soft, color: theme.primary }}
+              >
+                {theme.emoji} {theme.label}
+              </span>
+              <span className="text-gray-300 select-none text-sm">·</span>
+              <span className="text-gray-400 text-sm">{festival.date}</span>
+              <span className="text-gray-300 select-none text-sm">·</span>
+              <span
+                className="text-sm font-semibold"
+                style={{ color: theme.primary }}
+              >
+                {total} photo{total !== 1 ? "s" : ""}
+              </span>
+            </div>
 
-          <div className="flex items-center justify-center gap-3 mt-4 text-gray-600 text-lg">
-            <span className="text-gray-400">•</span>
-            <span>{festival.date}</span>
-            <span className="text-gray-400">•</span>
-          </div>
-        </motion.div>
+            {/* Title row */}
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <div>
+                <h1
+                  className="text-4xl md:text-5xl font-extrabold text-[#0f172a] leading-[1.1] tracking-tight"
+                  style={{ fontFamily: "'Georgia', 'Cambria', serif" }}
+                >
+                  {festival.title}
+                </h1>
+                <p className="text-base text-gray-400 font-medium mt-1.5">
+                  {festival.subtitle}
+                </p>
+              </div>
 
-        {/* Pinterest Masonry Grid */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6 px-4">
-          {festival.gallery.map((item, index) => (
-            <div
-              key={index}
-              className="break-inside-avoid relative group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="relative">
-                <Image
-                  src={item.src}
-                  alt={`${festival.title} - Image ${index + 1}`}
-                  width={400}
-                  height={item.height}
-                  className="w-full object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                  priority={index < 3}
-                  loading={index < 3 ? undefined : "lazy"}
-                />
-
-                {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl">
-                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                    <span className="text-sm bg-black/30 px-3 py-1 rounded-full">
-                      Image {index + 1}
-                    </span>
-                  </div>
-                </div>
+              {/* Camera chip */}
+              <div
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl self-start sm:self-auto shrink-0 border"
+                style={{
+                  background: theme.soft,
+                  borderColor: `${theme.primary}25`,
+                }}
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke={theme.primary}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+                  <circle cx="12" cy="13" r="4" />
+                </svg>
+                <span
+                  className="text-sm font-bold"
+                  style={{ color: theme.primary }}
+                >
+                  {total} Photo{total !== 1 ? "s" : ""}
+                </span>
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* Gallery Info Footer */}
-        <div className="mt-12 pt-8 border-t border-gray-200 text-center px-4">
-          <p className="text-gray-600 mb-2">
-            Showing {festival.gallery.length} images from {festival.title}
-          </p>
+            {/* Animated accent rule */}
+            <div className="mt-7 h-px w-full bg-gray-100 relative overflow-hidden">
+              <motion.div
+                className="absolute inset-y-0 left-0 rounded-full"
+                style={{
+                  background: `linear-gradient(90deg, ${theme.primary}, ${theme.primary}30)`,
+                }}
+                initial={{ width: 0 }}
+                animate={{ width: "9rem" }}
+                transition={{
+                  duration: 0.9,
+                  delay: 0.3,
+                  ease: [0.215, 0.61, 0.355, 1],
+                }}
+              />
+            </div>
+          </motion.div>
+
+          {/* ── MASONRY COLUMNS ──────────────────────────────────
+              Uses CSS columns via flex so images always fill their
+              container with zero whitespace gaps.
+          ─────────────────────────────────────────────────────── */}
+          <div className="flex gap-3 items-start w-full">
+            {columns.map((col, colIdx) => (
+              <div
+                key={colIdx}
+                className={`${colWidthClass} flex flex-col gap-3`}
+              >
+                {col.map(({ src, originalIndex }) => (
+                  <MasonryCard
+                    key={originalIndex}
+                    src={src}
+                    originalIndex={originalIndex}
+                    total={total}
+                    title={festival.title}
+                    theme={theme}
+                    onOpen={setLightboxIndex}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+
+          {/* ── FOOTER ─────────────────────────────────────────── */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="mt-12 pt-7 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3"
+          >
+            <p className="text-gray-400 text-sm">
+              All{" "}
+              <span className="font-semibold text-gray-600">
+                {total} photos
+              </span>{" "}
+              from{" "}
+              <span className="font-semibold" style={{ color: theme.primary }}>
+                {festival.title}
+              </span>
+            </p>
+            <button
+              onClick={() => setLightboxIndex(0)}
+              className="text-sm font-semibold px-5 py-2.5 rounded-full border transition-all duration-250 hover:scale-105 active:scale-95"
+              style={{
+                background: theme.soft,
+                color: theme.primary,
+                borderColor: `${theme.primary}28`,
+              }}
+            >
+              {theme.emoji} View slideshow
+            </button>
+          </motion.div>
         </div>
-      </div>
-    </main>
+      </main>
+
+      {/* ── LIGHTBOX ─────────────────────────────────────────────── */}
+      <Lightbox
+        gallery={festival.gallery}
+        title={festival.title}
+        date={festival.date}
+        index={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onPrev={() => setLightboxIndex((i) => (i - 1 + len) % len)}
+        onNext={() => setLightboxIndex((i) => (i + 1) % len)}
+        theme={theme}
+      />
+    </>
   );
 }
