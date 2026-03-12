@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, use } from "react";
 import Image from "next/image";
 import { motion, useInView, AnimatePresence } from "framer-motion";
+import { Lamp, Palette, Sparkles, Target, Trophy, Wheat } from "lucide-react";
 
 // ─────────────────────────────────────────────────────────────────
 // ASSETS — edit arrays to match your actual files
@@ -108,34 +109,39 @@ const THEMES = {
   ganesh: {
     primary: "#c2701f",
     soft: "#fef5e7",
-    emoji: "🪔",
+    icon: Lamp,
     label: "Festival",
   },
   diwali: {
     primary: "#7c3aed",
     soft: "#f5f3ff",
-    emoji: "✨",
+    icon: Sparkles,
     label: "Festival",
   },
   activities: {
     primary: "#0369a1",
     soft: "#e0f2fe",
-    emoji: "🎯",
+    icon: Target,
     label: "Events",
   },
   pongal: {
     primary: "#15803d",
     soft: "#dcfce7",
-    emoji: "🌾",
+    icon: Wheat,
     label: "Festival",
   },
   cricket: {
     primary: "#1e40af",
     soft: "#dbeafe",
-    emoji: "🏏",
+    icon: Trophy,
     label: "Sports",
   },
-  holi: { primary: "#be185d", soft: "#fce7f3", emoji: "🎨", label: "Festival" },
+  holi: {
+    primary: "#be185d",
+    soft: "#fce7f3",
+    icon: Palette,
+    label: "Festival",
+  },
 };
 
 // ─────────────────────────────────────────────────────────────────

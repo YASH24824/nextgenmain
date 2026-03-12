@@ -87,7 +87,6 @@ const Address = () => {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
-
           <motion.h2
             className="text-4xl md:text-5xl font-bold text-white mb-4 relative inline-block cursor-pointer group"
             initial={{ opacity: 0, y: 20 }}
@@ -99,7 +98,8 @@ const Address = () => {
           </motion.h2>
 
           <p className="text-xl text-white/90 max-w-4xl mx-auto font-light">
-            We operate across multiple major cities, committed to providing localized service and support.
+            We operate across multiple major cities, committed to providing
+            localized service and support.
           </p>
         </div>
 
@@ -132,8 +132,9 @@ const Address = () => {
                 href={office.mapLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`group block relative bg-white rounded-2xl p-4 shadow-xl border border-slate-100 transition-all duration-500 transform overflow-hidden cursor-pointer w-full max-w-2xl ${!isActive ? "hidden" : ""
-                  }`}
+                className={`group block relative bg-white rounded-2xl p-4 shadow-xl border border-slate-100 transition-all duration-500 transform overflow-hidden cursor-pointer w-full max-w-2xl ${
+                  !isActive ? "hidden" : ""
+                }`}
               >
                 {/* Top accent line */}
                 <div
@@ -151,6 +152,7 @@ const Address = () => {
                       {office.title}
                     </h3>
                   </div>
+                  <br />
 
                   {/* Right: City badge */}
                   <span className="text-sm font-bold text-[#245586] tracking-wider px-3 py-1 bg-[#e8f4ff] rounded-lg border border-[#76a5d3]/30">
@@ -166,68 +168,108 @@ const Address = () => {
         </div>
 
         {/* Business Hours / Phone / Email (unchanged) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 items-start">
           {/* Business Hours */}
-          <div className="group bg-white rounded-2xl p-4 shadow-xl border border-slate-100 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-300">
+          <div className="group h-full bg-white rounded-2xl p-4 shadow-xl border border-slate-100 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-300">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-[#245586] to-[#76a5d3] rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl">
+              <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-[#245586] to-[#76a5d3] rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-105">
                 <MapPin className="w-5 h-5 text-white" strokeWidth={2} />
               </div>
-              <div>
-                <h4 className="text-lg font-bold text-[#1c4268] mb-0.5">Business Hours</h4>
+
+              <div className="space-y-1">
+                <h4 className="text-lg font-bold text-[#1c4268] leading-tight">
+                  Business Hours
+                </h4>
+                <br />
+
                 <p className="text-sm text-slate-700 font-medium">Mon - Sat</p>
-                <p className="text-sm font-extrabold text-[#245586] mt-0.5">9:00 AM - 6:00 PM</p>
-                <p className="text-xs text-slate-500 mt-0.5 font-medium">Sunday: Closed</p>
+                <p className="text-sm font-extrabold text-[#245586]">
+                  9:00 AM - 6:00 PM
+                </p>
+                <p className="text-xs text-slate-500 font-medium">
+                  Sunday: Closed
+                </p>
               </div>
             </div>
           </div>
 
           {/* Phone */}
-          <div className="group bg-white rounded-2xl p-4 shadow-xl border border-slate-100 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-300">
+          <div className="group h-full bg-white rounded-2xl p-4 shadow-xl border border-slate-100 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-300">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-[#245586] to-[#76a5d3] rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl">
+              <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-[#245586] to-[#76a5d3] rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-105">
                 <Phone className="w-5 h-5 text-white" strokeWidth={2} />
               </div>
-              <div>
-                <h4 className="text-lg font-bold text-[#1c4268] mb-0.5">Call Us Directly</h4>
+
+              <div className="space-y-1 w-full">
+                <h4 className="text-lg font-bold text-[#1c4268] leading-tight">
+                  Call Us Directly
+                </h4>
+
                 <a
                   href="tel:+919737388388"
-                  className="text-sm font-extrabold text-[#245586] transition-colors hover:text-[#1c4268] inline-block mt-0.5"
+                  className="text-sm font-extrabold text-[#245586] hover:text-[#1c4268]"
                 >
                   +91 9737388388
                 </a>
-                <p className="text-xs text-slate-500 mt-0.5 font-medium">Available during work hours</p>
-                
-                {/* Local Language Support */}
-                <div className="mt-3 pt-3 border-t border-slate-200">
-                  <p className="text-xs font-semibold text-[#1c4268] mb-1">Local Language Support (Chennai)</p>
+
+                <p className="text-xs text-slate-500 font-medium">
+                  Available during work hours
+                </p>
+
+                {/* Chennai */}
+                <div className="pt-2 border-t border-slate-200 space-y-0.5">
+                  <p className="text-xs font-semibold text-[#1c4268]">
+                    Local Language Support (Chennai)
+                  </p>
                   <a
                     href="tel:+916357665925"
-                    className="text-sm font-extrabold text-[#245586] transition-colors hover:text-[#1c4268] inline-block"
+                    className="text-sm font-extrabold text-[#245586] hover:text-[#1c4268]"
                   >
                     +91 6357 665 925
                   </a>
-                  <p className="text-xs text-slate-500 mt-0.5 font-medium">Tamil, Kannada, Telugu, Malayalam</p>
+                  <p className="text-xs text-slate-500">
+                    Tamil, Kannada, Telugu, Malayalam
+                  </p>
+                </div>
+
+                {/* Pune */}
+                <div className="pt-2 border-t border-slate-200 space-y-0.5">
+                  <p className="text-xs font-semibold text-[#1c4268]">
+                    Local Language Support (Pune)
+                  </p>
+                  <a
+                    href="tel:+916357635806"
+                    className="text-sm font-extrabold text-[#245586] hover:text-[#1c4268]"
+                  >
+                    +91 6357 635 806
+                  </a>
+                  <p className="text-xs text-slate-500">Marathi</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Email */}
-          <div className="group bg-white rounded-2xl p-4 shadow-xl border border-slate-100 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-300">
+          <div className="group h-full bg-white rounded-2xl p-4 shadow-xl border border-slate-100 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-300">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-[#245586] to-[#76a5d3] rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl">
-                <MapPin className="w-5 h-5 text-white" strokeWidth={2} />
+              <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-[#245586] to-[#76a5d3] rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-105">
+                <Mail className="w-5 h-5 text-white" strokeWidth={2} />
               </div>
-              <div>
-                <h4 className="text-lg font-bold text-[#1c4268] mb-0.5">Send Us an Email</h4>
+
+              <div className="space-y-1">
+                <h4 className="text-lg font-bold text-[#1c4268] leading-tight">
+                  Send Us an Email
+                </h4>
+                <br />
                 <a
                   href="mailto:info@nextgenconsultancy.in"
-                  className="text-sm font-extrabold text-[#245586] mt-0.5 break-all transition-colors hover:text-[#1c4268] inline-block"
+                  className="text-sm font-extrabold text-[#245586] break-all hover:text-[#1c4268]"
                 >
                   support@nextgenbusiness.co.in
                 </a>
-                <p className="text-xs text-slate-500 mt-0.5 font-medium">24-hour response time guarantee</p>
+                <p className="text-xs text-slate-500 font-medium">
+                  24-hour response time guarantee
+                </p>
               </div>
             </div>
           </div>
@@ -236,8 +278,13 @@ const Address = () => {
 
       <style jsx>{`
         @keyframes pulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(36, 85, 134, 0.4); }
-          50% { box-shadow: 0 0 15px 5px rgba(118, 165, 211, 0.6); }
+          0%,
+          100% {
+            box-shadow: 0 0 0 0 rgba(36, 85, 134, 0.4);
+          }
+          50% {
+            box-shadow: 0 0 15px 5px rgba(118, 165, 211, 0.6);
+          }
         }
       `}</style>
     </section>
