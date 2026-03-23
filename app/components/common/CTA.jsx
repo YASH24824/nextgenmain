@@ -113,14 +113,22 @@ export default function CTA() {
         message: "subscriber",
       };
 
-      const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
+      // const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+      //     "Origin": `https://${normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN)}`,
+      //   },
+      //   credentials: "include",
+      //   body: JSON.stringify(payload),
+      // });
+
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
-          "Origin": `https://${normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN)}`,
         },
-        credentials: "include",
         body: JSON.stringify(payload),
       });
 
@@ -175,7 +183,8 @@ export default function CTA() {
       <div className="relative flex flex-col lg:flex-row items-center justify-between max-w-7xl w-full mx-4 lg:mx-8 bg-gradient-to-r from-[#05325f] to-[#5b93ca] rounded-3xl shadow-2xl overflow-hidden border border-[#245586] px-8 lg:px-12 py-10 lg:py-8">
         <div className="flex-1 lg:pr-8 mb-6 lg:mb-0">
           <h2 className="text-3xl lg:text-4xl font-bold leading-tight text-white">
-            Unlock <span className="text-[#a8c8e8]">Growth Potential</span> Today
+            Unlock <span className="text-[#a8c8e8]">Growth Potential</span>{" "}
+            Today
           </h2>
           <p className="text-gray-200 text-base lg:text-sm mt-3 leading-relaxed">
             Enter your details to schedule your free consultancy session.
@@ -242,4 +251,3 @@ export default function CTA() {
     </section>
   );
 }
-

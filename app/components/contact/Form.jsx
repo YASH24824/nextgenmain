@@ -89,7 +89,7 @@ const ContactPage = () => {
       const phonePattern = /^[0-9]{10,15}$/;
       if (value && !phonePattern.test(value)) {
         e.target.setCustomValidity(
-          "Phone number should be between 10 and 15 digits"
+          "Phone number should be between 10 and 15 digits",
         );
         setErrors((prev) => ({
           ...prev,
@@ -152,14 +152,23 @@ const ContactPage = () => {
         message: `${formData.message}, Service Type: ${formData.service}`,
       };
 
-      const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
+      // const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+      //     Origin: `https://${normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN)}`,
+      //   },
+      //   credentials: "include",
+      //   body: JSON.stringify(payload),
+      // });
+
+      // 2️⃣ Call your LMS API (new one)
+      const response  = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
-          "Origin": `https://${normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN)}`,
         },
-        credentials: "include",
         body: JSON.stringify(payload),
       });
 
@@ -277,7 +286,7 @@ const ContactPage = () => {
                         {text}
                       </span>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -346,8 +355,8 @@ const ContactPage = () => {
                             errors.name
                               ? "border-red-500"
                               : focusedField === "name"
-                              ? "border-[#245586]"
-                              : "border-gray-200"
+                                ? "border-[#245586]"
+                                : "border-gray-200"
                           }
                           hover:border-[#76a5d3] focus:bg-[#e8f4ff]/20`}
                       />
@@ -394,8 +403,8 @@ const ContactPage = () => {
                             errors.phone
                               ? "border-red-500"
                               : focusedField === "phone"
-                              ? "border-[#245586]"
-                              : "border-gray-200"
+                                ? "border-[#245586]"
+                                : "border-gray-200"
                           }
                           hover:border-[#76a5d3] focus:bg-[#e8f4ff]/20`}
                       />
@@ -443,8 +452,8 @@ const ContactPage = () => {
                           errors.email
                             ? "border-red-500"
                             : focusedField === "email"
-                            ? "border-[#245586]"
-                            : "border-gray-200"
+                              ? "border-[#245586]"
+                              : "border-gray-200"
                         }
                         hover:border-[#76a5d3] focus:bg-[#e8f4ff]/20`}
                     />
@@ -489,8 +498,8 @@ const ContactPage = () => {
                           errors.service
                             ? "border-red-500"
                             : focusedField === "service"
-                            ? "border-[#245586]"
-                            : "border-gray-200"
+                              ? "border-[#245586]"
+                              : "border-gray-200"
                         }
                         hover:border-[#76a5d3] focus:bg-[#e8f4ff]/20`}
                     >
@@ -559,8 +568,8 @@ const ContactPage = () => {
                           errors.message
                             ? "border-red-500"
                             : focusedField === "message"
-                            ? "border-[#245586]"
-                            : "border-gray-200"
+                              ? "border-[#245586]"
+                              : "border-gray-200"
                         }
                         hover:border-[#76a5d3] focus:bg-[#e8f4ff]/20`}
                     />
