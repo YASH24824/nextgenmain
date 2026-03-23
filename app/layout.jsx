@@ -2,6 +2,7 @@ import "./globals.css";
 import FloatingButton from "./components/FloatingButton";
 import Script from "next/script";
 import { Be_Vietnam_Pro, Bebas_Neue, Inter } from "next/font/google";
+import CelebrationPopup from "./components/CelebrationPopup";
 
 // Optimize fonts with Next.js font optimization
 const beVietnamPro = Be_Vietnam_Pro({
@@ -212,12 +213,23 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="en" className={`${beVietnamPro.variable} ${bebasNeue.variable} ${inter.variable}`}>
+    <html
+      lang="en"
+      className={`${beVietnamPro.variable} ${bebasNeue.variable} ${inter.variable}`}
+    >
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.clarity.ms" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://www.clarity.ms" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://www.googletagmanager.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preconnect"
+          href="https://www.clarity.ms"
+          crossOrigin="anonymous"
+        />
 
         <script
           type="application/ld+json"
@@ -269,6 +281,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         {children}
+        <CelebrationPopup />
         <FloatingButton />
       </body>
     </html>
