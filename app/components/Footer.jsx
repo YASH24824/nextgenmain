@@ -47,7 +47,7 @@ export default function Footer() {
             </a>
             {/* Instagram */}
             <a
-              href="https://www.instagram.com/next_gen_business_consultancy/"
+              href="https://www.instagram.com/next_gen_group_of_companies/"
               target="_blank"
               className="w-10 h-10 bg-[#1c4268] hover:bg-[#76a5d3] rounded-full flex items-center justify-center transition border border-[#245589]"
             >
