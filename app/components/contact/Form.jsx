@@ -14,6 +14,30 @@ const normalizeDomain = (domain) => {
   return cleanDomain;
 };
 
+// Request a reCAPTCHA v3 token for the given action. Resolves with the token
+// string, or rejects if grecaptcha is not loaded / the site key is missing.
+const getRecaptchaToken = (action) =>
+  new Promise((resolve, reject) => {
+    const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+    if (!siteKey) {
+      reject(new Error("reCAPTCHA site key is not configured"));
+      return;
+    }
+
+    if (typeof window === "undefined" || !window.grecaptcha) {
+      reject(new Error("reCAPTCHA script has not loaded yet"));
+      return;
+    }
+
+    window.grecaptcha.ready(() => {
+      window.grecaptcha
+        .execute(siteKey, { action })
+        .then(resolve)
+        .catch(reject);
+    });
+  });
+
 // Safely parse JSON responses, with robust logging for production debugging
 const parseJsonSafely = async (response, context = "lead-api") => {
   let data = {};
@@ -143,6 +167,20 @@ const ContactPage = () => {
       return;
     }
 
+    let recaptchaToken;
+    try {
+      recaptchaToken = await getRecaptchaToken("contact_form");
+    } catch (error) {
+      console.error("reCAPTCHA token generation failed:", error);
+      setStatus({
+        loading: false,
+        message:
+          "Verification failed. Please refresh the page and try again.",
+        error: true,
+      });
+      return;
+    }
+
     try {
       const payload = {
         name: formData.name,
@@ -150,6 +188,7 @@ const ContactPage = () => {
         phone: formData.phone,
         domain: normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN),
         message: `${formData.message}, Service Type: ${formData.service}`,
+        recaptchaToken,
       };
 
       // const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {

@@ -75,6 +75,8 @@ export default function Contact() {
     ],
   };
 
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
   return (
     <>
       <Script
@@ -83,6 +85,13 @@ export default function Contact() {
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      {recaptchaSiteKey && (
+        <Script
+          id="google-recaptcha-v3"
+          src={`https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`}
+          strategy="afterInteractive"
+        />
+      )}
       <Header />
       <Hero />
       <Form />
