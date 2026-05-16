@@ -622,14 +622,14 @@ const ContactPage = () => {
 
                 {/* Terms Checkbox */}
                 <div className="flex items-start pt-1">
-                  <input
+                  {/* <input
                     type="checkbox"
                     id="terms"
                     required
                     className="mt-0.5 mr-2"
-                  />
+                  /> */}
                   <label htmlFor="terms" className="text-xs text-gray-600">
-                    I agree to the{" "}
+                    By submitting this form, you agree to our{" "}
                     <Link
                       href="/terms-condition"
                       className="text-[#245586] hover:underline font-medium"
