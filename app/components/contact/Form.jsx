@@ -678,7 +678,7 @@ const ContactPage = () => {
                       </>
                     ) : (
                       <>
-                        Send Message
+                        Submit
                         <svg
                           className="ml-2 w-3 h-3 sm:w-4 sm:h-4 transform group-hover:translate-x-1 transition-transform"
                           fill="none"
