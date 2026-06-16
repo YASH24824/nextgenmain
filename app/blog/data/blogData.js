@@ -6,7 +6,7 @@ export const blogs = [
  {
     slug: "How-to-get-an-MSMEs-loan-For-Your-Business",
     title: "How to Get an MSME Loan For Your Business ",
-    mbimage:"/Fram2.png",
+    mbimage:"/msmeloan.png",
      image: "/Frame1.png",
     date: "Sept 26,2025",
     publishedDate: "2025-09-01",
