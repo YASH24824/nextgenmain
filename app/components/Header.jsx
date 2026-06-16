@@ -15,6 +15,8 @@ export const Header = () => {
     { label: "Our Story", href: "/about" },
     { label: "Solution", href: "/solution" },
     { label: "Contact", href: "/contact" },
+     { label: "Blog", href: "/blog" },
+
   ];
 
   useEffect(() => {
@@ -72,28 +74,7 @@ export const Header = () => {
               </a>
             ))}
 
-            {/* More Dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setIsMoreOpen(true)}
-              onMouseLeave={() => setIsMoreOpen(false)}
-            >
-              <button className="flex items-center gap-1 text-white font-medium text-[14px]">
-                More <ChevronDownIcon className="h-3 w-3" />
-              </button>
-
-              <div
-                className={`absolute left-0 top-full mt-0 w-40 text-white rounded-md transition-all duration-200 ${
-                  isMoreOpen
-                    ? "opacity-100 visible translate-y-0"
-                    : "opacity-0 invisible -translate-y-1"
-                }`}
-              >
-                <a href="/blog" className="block px-4 py-2 text-sm">
-                  Blog
-                </a>
-              </div>
-            </div>
+           
           </nav>
 
           {/* Call Button */}
@@ -166,13 +147,7 @@ export const Header = () => {
             ))}
 
             <div className="mt-4">
-              <a
-                href="/blog"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-white text-base font-medium hover:text-white/80"
-              >
-                Blog
-              </a>
+             
             </div>
           </nav>
 

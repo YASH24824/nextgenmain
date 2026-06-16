@@ -1,286 +1,387 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { blogs } from "../../blog/data/blogData";
+import { CalendarDays, ArrowRight, Search, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Blog() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const scrollContainerRef = useRef(null);
+  const searchBarRef = useRef(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
+  
+  const postsPerPage = 6;
+
+  const categories = [
+    "All",
+    ...new Set(blogs.map((blog) => blog.category)),
+  ];
+
+  const filteredBlogs = blogs.filter((blog) => {
+    const matchesCategory = selectedCategory === "All" || blog.category === selectedCategory;
+    const matchesSearch = searchQuery === "" || 
+                          blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          blog.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (blog.tags && blog.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
+    return matchesCategory && matchesSearch;
+  });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredBlogs.length / postsPerPage);
+  const startIndex = (currentPage - 1) * postsPerPage;
+  const endIndex = startIndex + postsPerPage;
+  const currentBlogs = filteredBlogs.slice(startIndex, endIndex);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchQuery]);
+
+  const scroll = (direction) => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 220;
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const checkScrollButtons = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setShowLeftArrow(scrollLeft > 10);
+      setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', checkScrollButtons);
+      checkScrollButtons();
+      return () => container.removeEventListener('scroll', checkScrollButtons);
+    }
+  }, []);
+
+  // Scroll to search bar function
+  const scrollToSearchBar = () => {
+    if (searchBarRef.current) {
+      const offset = 20;
+      const elementPosition = searchBarRef.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Pagination handlers with scroll to search bar
+  const goToPage = (page) => {
+    setCurrentPage(page);
+    setTimeout(() => {
+      scrollToSearchBar();
+    }, 100);
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      setTimeout(() => {
+        scrollToSearchBar();
+      }, 100);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+      setTimeout(() => {
+        scrollToSearchBar();
+      }, 100);
+    }
+  };
+
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pageNumbers.push(i);
+        }
+      } else {
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      }
+    }
+    return pageNumbers;
+  };
 
   return (
-    <section
-      className="w-full min-h-screen py-20 px-6 relative"
-      style={{ backgroundColor: "#f8f9fa" }}
-    >
-      {/* Animated Grid Background */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            linear-gradient(#245586 1px, transparent 1px),
-            linear-gradient(90deg, #245586 1px, transparent 1px)
-          `,
-            backgroundSize: "50px 50px",
-          }}
-        ></div>
-      </div>
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="mb-20">
-          <div className="inline-block mb-3"></div>
-          <motion.h2
-            className="text-4xl md:text-5xl font-bold text-[#1c4268] mt-4 relative inline-block cursor-pointer group"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            Latest Insights
-            <span className="absolute left-0 -bottom-3 h-1 bg-[#245586] w-0 transition-all duration-500 group-hover:w-full"></span>
-          </motion.h2>
-          <motion.p
-            className="text-xl mt-8"
-            style={{ color: "#5b93ca" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-          >
-            Explore thought leadership and industry perspectives
-          </motion.p>
+    <section className="w-full py-12 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-16">
+        
+        {/* Search Bar - Centered with ref */}
+        <div ref={searchBarRef} className="mb-6 scroll-mt-4">
+          <div className="relative max-w-xl mx-auto">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Search articles by title, description or tags..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-400 focus:border-[#245586] focus:outline-none focus:ring-1 focus:ring-[#245586]/30 transition-all text-sm"
+            />
+          </div>
         </div>
 
-        {/* Blog Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {blogs.map((blog, index) => (
+        {/* Category Filters */}
+        <div className="mb-8">
+          {/* Desktop View */}
+          <div className="hidden md:flex flex-wrap justify-center gap-3">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-5 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                  selectedCategory === category
+                    ? "bg-[#245586] text-white"
+                    : "bg-transparent text-[#245586] border border-[#245586] hover:bg-[#245586]/5"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          {/* Mobile View - Slider */}
+          <div className="md:hidden relative -mx-4 px-4">
+        
+            <div
+              ref={scrollContainerRef}
+              className="flex overflow-x-auto scrollbar-hide gap-2 py-2 px-1"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`flex-shrink-0 px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 whitespace-nowrap ${
+                    selectedCategory === category
+                      ? "bg-[#245586] text-white"
+                      : "bg-white text-[#245586] border border-[#245586]"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+     
+          </div>
+        </div>
+
+        {/* Results count */}
+     
+
+        {/* Cards Grid - 6 per page */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7">
+          {currentBlogs.map((blog, index) => (
             <Link
               key={blog.slug}
               href={`/blog/${blog.slug}`}
-              className="block"
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
+              <motion.article
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -5 }}
                 transition={{
-                  duration: 0.5,
-                  delay: index * 0.15,
+                  duration: 0.3,
+                  delay: Math.min(index * 0.05, 0.4),
                 }}
-                className="group cursor-pointer"
-              ></motion.div>
-              <motion.div
-                className="overflow-hidden transition-all duration-500 rounded-xl relative h-full"
-                style={{
-                  backgroundColor: "#ffffff",
-                  boxShadow:
-                    hoveredIndex === index
-                      ? "0 20px 60px rgba(28, 66, 104, 0.2)"
-                      : "0 5px 20px rgba(28, 66, 104, 0.1)",
-                  borderTop: `4px solid ${blog.color}`,
-                }}
-                whileHover={{ y: -8 }}
+                className="h-[500px] flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white hover:shadow-xl transition-all duration-300"
               >
-                {/* Colored Header Bar */}
-                <div
-                  className="h-1 w-full transition-all duration-500"
-                  style={{
-                    backgroundColor: blog.color,
-                    boxShadow:
-                      hoveredIndex === index
-                        ? `0 4px 20px ${blog.color}60`
-                        : "none",
-                  }}
-                />
-
-                <div className="p-8">
-                  {/* Top Section */}
-                  <div className="flex items-start justify-between mb-5">
-                    <motion.span
-                      className="text-xs font-bold tracking-widest uppercase"
-                      style={{ color: blog.color }}
-                      animate={{
-                        letterSpacing:
-                          hoveredIndex === index ? "0.2em" : "0.15em",
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {blog.category}
-                    </motion.span>
-
-                    <motion.div
-                      className="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300"
-                      style={{
-                        backgroundColor:
-                          hoveredIndex === index ? blog.color : "#f8f9fa",
-                      }}
-                      whileHover={{ scale: 1.1, rotate: 90 }}
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        style={{
-                          stroke:
-                            hoveredIndex === index ? "#ffffff" : blog.color,
-                        }}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2.5}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M17 8l4 4m0 0l-4 4m4-4H3"
-                        />
-                      </svg>
-                    </motion.div>
-                  </div>
-
-                  {/* Title */}
-                  <motion.h2
-                    className="text-2xl font-bold mb-4 leading-tight"
-                    style={{ color: "#1c4268" }}
+                {/* Image - 50% height */}
+                <div className="h-1/2 overflow-hidden bg-gray-100">
+                  <motion.img
+                    src={blog.mbimage}
+                    alt={blog.title}
+                    className="w-full h-full object-cover"
                     animate={{
-                      color: hoveredIndex === index ? blog.color : "#1c4268",
+                      scale: hoveredIndex === index ? 1.05 : 1,
                     }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.4 }}
+                  />
+                </div>
+
+                {/* Content - 50% height */}
+                <div className="h-1/2 flex flex-col p-5">
+                  {/* Title */}
+                  <h2
+                    className="text-xl font-bold tracking-tight line-clamp-2 mb-2 transition-colors duration-300 text-gray-900"
+                    style={{
+                      color: hoveredIndex === index ? blog.color : "#1a1a2e",
+                    }}
                   >
                     {blog.title}
-                  </motion.h2>
+                  </h2>
 
                   {/* Description */}
-                  <p
-                    className="text-base leading-relaxed mb-6"
-                    style={{ color: "#000000" }}
-                  >
+                  <p className="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-3">
                     {blog.description}
                   </p>
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {blog.tags.map((tag, i) => (
-                      <motion.span
-                        key={i}
-                        className="text-xs font-medium px-3 py-1.5 rounded-full border-2 transition-all duration-300"
-                        style={{
-                          borderColor: blog.color,
-                          color:
-                            hoveredIndex === index ? "#ffffff" : blog.color,
-                          backgroundColor:
-                            hoveredIndex === index ? blog.color : "transparent",
-                        }}
-                        whileHover={{
-                          scale: 1.05,
-                          y: -2,
-                        }}
-                      >
-                        {tag}
-                      </motion.span>
-                    ))}
-                  </div>
+                  {/* Tags - Limited to first 2 tags from array */}
+                  {blog.tags && blog.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {blog.tags.slice(0, 2).map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
-                  {/* Meta Info */}
-                  <div
-                    className="flex items-center gap-4 text-sm pt-5 border-t"
-                    style={{
-                      color: "#5b93ca",
-                      borderColor: "#ebf2f8",
-                    }}
-                  >
-                    <span className="flex items-center gap-1.5">
-                      <svg
-                        className="w-4 h-4"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
+                  {/* Bottom Section with Date and Read More */}
+                  <div className="mt-auto pt-1 border-t border-gray-100 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                      <CalendarDays size={13} strokeWidth={1.8} />
+                      <span>{blog.date}</span>
+                    </div>
+
+                    <motion.div
+                      className="flex items-center gap-1 text-sm font-medium text-[#245586]"
+                      whileHover={{ x: 3 }}
+                    >
+                      <span>Read More</span>
+                      <motion.div
+                        animate={{
+                          x: hoveredIndex === index ? 4 : 0,
+                        }}
+                        transition={{ duration: 0.2 }}
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      {blog.date}
-                    </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1.5">
-                      <svg
-                        className="w-4 h-4"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      {blog.readingTime}
-                    </span>
+                        <ArrowRight size={14} strokeWidth={2.5} />
+                      </motion.div>
+                    </motion.div>
                   </div>
                 </div>
-
-                {/* Bottom Accent Line */}
-                <motion.div
-                  className="h-1"
-                  initial={{ scaleX: 0 }}
-                  animate={{
-                    scaleX: hoveredIndex === index ? 1 : 0,
-                  }}
-                  transition={{ duration: 0.4 }}
-                  style={{
-                    transformOrigin: "left",
-                    backgroundColor: blog.color,
-                  }}
-                />
-              </motion.div>
+              </motion.article>
             </Link>
           ))}
         </div>
+       
 
-        {/* Load More Section */}
-        <motion.div
-          className="mt-16 text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
+        {/* Pagination */}
+    {totalPages > 1 && (
+  <div className="mt-12 flex flex-col items-center justify-center gap-4">
+   
+    {/* Pagination Controls */}
+    <div className="flex items-center justify-center gap-2">
+      {/* Previous Button */}
+      <button
+        onClick={goToPreviousPage}
+        disabled={currentPage === 1}
+        className={`p-2 rounded-lg border transition-all duration-300 ${
+          currentPage === 1
+            ? "border-gray-200 text-gray-300 cursor-not-allowed"
+            : "border-gray-300 text-[#245586] hover:bg-[#245586] hover:text-white hover:border-[#245586]"
+        }`}
+      >
+        <ChevronLeft size={18} />
+      </button>
+
+      {/* Page Numbers */}
+      {getPageNumbers().map((page, index) => (
+        <button
+          key={index}
+          onClick={() => typeof page === 'number' && goToPage(page)}
+          className={`min-w-[40px] h-10 px-3 rounded-lg font-medium transition-all duration-300 ${
+            currentPage === page
+              ? "bg-[#245586] text-white"
+              : "text-gray-600 hover:bg-gray-100"
+          } ${typeof page !== 'number' ? 'cursor-default' : ''}`}
         >
-          <motion.button
-            className="px-10 py-4 font-semibold text-lg transition-all duration-300 rounded-lg relative overflow-hidden group"
-            style={{
-              backgroundColor: "#245586",
-              color: "#ffffff",
-            }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <motion.span
-              className="absolute inset-0"
-              style={{
-                backgroundColor: "#3278bd",
-              }}
-              initial={{ x: "-100%" }}
-              whileHover={{ x: 0 }}
-              transition={{ duration: 0.4 }}
-            />
+          {page}
+        </button>
+      ))}
 
-            <span className="relative z-10 flex items-center justify-center gap-3">
-              View All Articles
-              <motion.span
-                animate={{
-                  x: [0, 5, 0],
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                →
-              </motion.span>
-            </span>
-          </motion.button>
-        </motion.div>
+      {/* Next Button */}
+      <button
+        onClick={goToNextPage}
+        disabled={currentPage === totalPages}
+        className={`p-2 rounded-lg border transition-all duration-300 ${
+          currentPage === totalPages
+            ? "border-gray-200 text-gray-300 cursor-not-allowed"
+            : "border-gray-300 text-[#245586] hover:bg-[#245586] hover:text-white hover:border-[#245586]"
+        }`}
+      >
+        <ChevronRight size={18} />
+      </button>
+    </div>
+     {/* Results Count */}
+    {filteredBlogs.length > 0 && (
+      <div className="text-sm text-gray-500 text-center">
+        Showing {startIndex + 1}-{Math.min(endIndex, filteredBlogs.length)} of {filteredBlogs.length} articles
       </div>
+    )}
+    
+  </div>
+)}
+
+        {/* Empty state */}
+        {filteredBlogs.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-sm">No articles found matching your criteria.</p>
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedCategory("All");
+              }}
+              className="mt-3 px-5 py-2 bg-[#245586] text-white rounded-lg text-sm font-medium hover:bg-[#1a3d5c] transition-colors"
+            >
+              Clear Filters
+            </button>
+          </div>
+        )}
+      </div>
+
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </section>
   );
 }

@@ -1,7 +1,8 @@
 "use client";
+import { useState, useEffect } from "react";
+import ContactUs from "./ContactUs";
+import FloatingButtonSVG from "../../public/button/button.svg";
 
-import { useState, useEffect, useRef } from "react";
-import ContactUs from "./ContactUs"; // Adjust the import path as needed
 
 const FloatingButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,7 +18,6 @@ const FloatingButton = () => {
     setIsModalOpen(false);
   };
 
-  // Handle body overflow when modal is open
   useEffect(() => {
     if (isModalOpen) {
       document.body.style.overflow = "hidden";
@@ -28,21 +28,23 @@ const FloatingButton = () => {
 
   return (
     <>
-      {/* Floating Button */}
-      <div className="fixed left-0 top-1/2 -translate-y-1/2 z-40">
+      {/* Floating Button with Wave + Buzz Effect */}
+      <div className="fixed right-4 bottom-20 z-40 sm:bottom-24  xl:bottom-50">
+        {/* Wave rings */}
+        <div className="absolute inset-0 rounded-full animate-wave-ring1"></div>
+        <div className="absolute inset-0 rounded-full animate-wave-ring2"></div>
+        <div className="absolute inset-0 rounded-full animate-wave-ring3"></div>
+        
+        {/* Button with buzz */}
         <button
           onClick={toggleModal}
-          className="relative w-16 h-48 flex flex-col items-center justify-center bg-gradient-to-b from-[#1c3a6d] to-[#4975b8] text-white font-semibold text-sm sm:text-base tracking-wide rounded-r-3xl overflow-hidden shadow-lg shadow-[#245586]/50 hover:scale-105 hover:shadow-xl hover:shadow-[#76a5d3]/70 transition-all duration-300"
-          style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
-          aria-label="Book a Consultation"
+          className="relative block hover:scale-105 transition-all duration-300 animate-buzz"
         >
-          {/* Button text */}
-          <span className="relative z-10 text-center rotate-180">
-            Free Consultation
-          </span>
-
-          {/* Subtle moving glow overlay */}
-          <span className="absolute inset-0 bg-white opacity-10 animate-[glow_3s_linear_infinite]"></span>
+          <img 
+            src={FloatingButtonSVG.src || FloatingButtonSVG}
+            alt="Free Consultation"
+            className="w-16 h-auto"
+          />
         </button>
       </div>
 
@@ -53,33 +55,75 @@ const FloatingButton = () => {
         </div>
       )}
 
-      {/* Global CSS for animations */}
       <style jsx global>{`
-        @keyframes glow {
+        @keyframes wave-ring1 {
           0% {
-            transform: translateY(-100%);
-          }
-          50% {
-            transform: translateY(100%);
+            transform: scale(1);
+            opacity: 0.6;
+            box-shadow: 0 0 0 0 rgba(73, 117, 184, 0.7);
           }
           100% {
-            transform: translateY(-100%);
-          }
-        }
-
-        @keyframes scaleIn {
-          from {
+            transform: scale(1.4);
             opacity: 0;
-            transform: scale(0.95) translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
+            box-shadow: 0 0 0 25px rgba(73, 117, 184, 0);
           }
         }
 
-        .animate-scaleIn {
-          animation: scaleIn 0.3s ease-out forwards;
+        @keyframes wave-ring2 {
+          0% {
+            transform: scale(1);
+            opacity: 0.4;
+            box-shadow: 0 0 0 0 rgba(73, 117, 184, 0.5);
+          }
+          100% {
+            transform: scale(1.7);
+            opacity: 0;
+            box-shadow: 0 0 0 40px rgba(73, 117, 184, 0);
+          }
+        }
+
+        @keyframes wave-ring3 {
+          0% {
+            transform: scale(1);
+            opacity: 0.2;
+            box-shadow: 0 0 0 0 rgba(73, 117, 184, 0.3);
+          }
+          100% {
+            transform: scale(2.0);
+            opacity: 0;
+            box-shadow: 0 0 0 55px rgba(73, 117, 184, 0);
+          }
+        }
+
+        @keyframes buzz {
+          0%, 100% {
+            transform: translate(0, 0);
+          }
+          25% {
+            transform: translate(1px, -1px);
+          }
+          50% {
+            transform: translate(-1px, 1px);
+          }
+          75% {
+            transform: translate(1px, -1px);
+          }
+        }
+
+        .animate-wave-ring1 {
+          animation: wave-ring1 2s ease-out infinite;
+        }
+
+        .animate-wave-ring2 {
+          animation: wave-ring2 2.5s ease-out infinite;
+        }
+
+        .animate-wave-ring3 {
+          animation: wave-ring3 3s ease-out infinite;
+        }
+
+        .animate-buzz {
+          animation: buzz 0.3s ease-in-out infinite;
         }
       `}</style>
     </>

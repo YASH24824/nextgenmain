@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import { React, useState, useEffect } from "react";
+import ContactUs from "../ContactUs";
 
 const animationStyles = `
   @keyframes slideInUp {
@@ -138,17 +139,7 @@ const Section = ({ id, title, paragraphs, listItems, subTitle, closingParagraph,
       style={{ animationDelay: delay }}
     >
       <div className="flex items-start gap-6 mb-6">
-        <div className="flex-shrink-0">
-          <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#245586] shadow-md">
-            <svg
-              className="w-6 h-6 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              {IconSVG}
-            </svg>
-          </div>
-        </div>
+      
         <div className="flex-1">
           <h2 className="text-3xl font-bold text-[#05325f] mb-4 group-hover:text-gradient transition-all duration-300">
             {title}
@@ -194,16 +185,62 @@ export default function Blogview({ blog }) {
   if (!blog) {
     return null;
   }
+  
+  // State for modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState("Free Consultation Booking");
+  
+  // State for mobile dropdown - always open/static
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Changed to true - always open by default
+  const [activeSection, setActiveSection] = useState("");
 
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // DECLARE tocItems FIRST before using in useEffect
   const tocItems = blog.tocItems || [];
   const content = blog.content || {};
+
+  // Track active section on scroll - Now after tocItems is declared
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = tocItems.map(item => textToId(item));
+      const scrollPosition = window.scrollY + 200;
+      
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sections[i]);
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveSection(sections[i]);
+          break;
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Call once to set initial active section
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [tocItems]);
+
+  // Handle body overflow when modal is open
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isModalOpen]);
 
   // Smooth scroll function with offset
   const handleNavigationClick = (e, targetId) => {
     e.preventDefault();
     const targetElement = document.getElementById(targetId);
     if (targetElement) {
-      const headerOffset = 120;
+      const headerOffset = 160;
       const elementPosition = targetElement.offsetTop;
       const offsetPosition = elementPosition - headerOffset;
 
@@ -213,6 +250,7 @@ export default function Blogview({ blog }) {
       });
 
       window.history.pushState(null, null, `#${targetId}`);
+      setActiveSection(targetId); // Set active section immediately
     }
   };
 
@@ -544,19 +582,7 @@ export default function Blogview({ blog }) {
         >
           <div className="flex items-start gap-6 mb-6">
             <div className="flex-shrink-0">
-              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#245586] shadow-md">
-                <svg
-                  className="w-6 h-6 text-white"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
+           
             </div>
             <div className="flex-1">
               <h2 className="text-3xl font-bold text-[#05325f] mb-4 group-hover:text-gradient transition-all duration-300">
@@ -582,9 +608,7 @@ export default function Blogview({ blog }) {
   // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return "";
-    // If it's already formatted like "October 2025", return as is
     if (dateString.includes(" ")) return dateString;
-    // Otherwise try to format it
     try {
       const date = new Date(dateString);
       return date.toLocaleDateString("en-US", {
@@ -603,48 +627,94 @@ export default function Blogview({ blog }) {
 
       <section className="bg-white py-16 md:py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          {/* Blog Header Section */}
-          <div className="mb-16 animate-slide-up">
-            <div className="bg-gradient-to-r from-[#05325f] to-[#245586] rounded-2xl shadow-xl overflow-hidden hover-lift group">
-              <div className="p-12 md:p-16 relative overflow-hidden">
-                <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-1.5 h-12 bg-white rounded-full"></div>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight">
-                      {blog.title}
-                    </h1>
-                  </div>
-                  <p className="text-blue-100 leading-relaxed text-lg max-w-3xl mb-6">
-                    {blog.description}
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                      <svg
-                        className="w-4 h-4 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                    <span className="text-white font-semibold">
-                      {formatDate(blog.date)}
-                    </span>
-                  </div>
-                </div>
+          {/* Blog Header Banner - Full Width Responsive Image with Mobile Top Padding */}
+          <div className="mb-16 animate-slide-up -mx-4 sm:-mx-6 lg:-mx-8 pt-6 sm:pt-0">
+            <div className="relative w-full">
+              <div className="relative w-full h-[250px] sm:h-[350px] md:h-[450px] lg:h-[550px] xl:h-[400px] overflow-hidden rounded-2xl">
+                <img
+                  src={blog.image || "/images/blog-placeholder.jpg"}
+                  alt={blog.title}
+                  className="w-full h-full object-contain object-center"
+                  style={{ objectPosition: "center" }}
+                />
+                
               </div>
             </div>
           </div>
+{tocItems.length > 0 && (
+  <div className="sticky top-28 z-50 pb-2 sm:hidden">
+    <div className="px-2">
+      {/* TOC Header - Shows active section name - Full width */}
+      <div 
+        className="flex items-center justify-between bg-gradient-to-r from-[#05325f] to-[#245586] text-white px-5 py-3 rounded-xl shadow-lg cursor-pointer w-full"
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+      >
+        <div className="flex items-center gap-2 flex-1">
+          <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+          </svg>
+          <span className="font-semibold text-sm truncate">
+            {activeSection ? (
+              <span className="flex items-center gap-1">
+                <span>{tocItems.find((item, idx) => textToId(item) === activeSection) || "Table of Contents"}</span>
+              </span>
+            ) : (
+              "Table of Contents"
+            )}
+          </span>
+        </div>
+        <svg
+          className={`w-4 h-4 flex-shrink-0 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+      
+      {/* Dropdown Menu - Same width as header */}
+      {isDropdownOpen && (
+        <div className="absolute left-2 right-2 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-fade-in z-50">
+          <ul className="divide-y divide-gray-100 max-h-80 overflow-y-auto">
+            {tocItems.map((item, idx) => {
+              const targetId = textToId(item);
+              const isActive = activeSection === targetId;
+              return (
+                <li key={idx}>
+                  <button
+                    onClick={(e) => {
+                      handleNavigationClick(e, targetId);
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-5 py-4 text-base font-medium transition-all duration-200 flex items-center gap-3 ${
+                      isActive 
+                        ? 'bg-[#245586]/10 text-[#245586] border-l-4 border-[#245586]' 
+                        : 'text-gray-700 hover:bg-[#F7F9FF] hover:text-[#245586]'
+                    }`}
+                  >
+                    <span className="text-[#245586] font-bold min-w-[32px] text-base">{idx + 1}.</span>
+                    <span className="flex-1">{item}</span>
+                    {isActive && (
+                      <svg className="w-5 h-5 text-[#245586]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+    </div>
+  </div>
+)}
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Sidebar */}
+            {/* Sidebar - Hidden on mobile, visible on desktop */}
             {tocItems.length > 0 && (
-              <aside className="lg:col-span-1">
+              <aside className="hidden lg:block lg:col-span-1">
                 <div className="sticky top-20 animate-fade-in">
                   <div className="bg-gradient-to-b from-[#F7F9FF] to-[#EAF2FF] rounded-2xl shadow-lg border border-gray-200 p-6 hover-lift border-glow">
                     <div className="flex items-center gap-3 mb-6">
@@ -682,13 +752,46 @@ export default function Blogview({ blog }) {
                         );
                       })}
                     </ul>
+
+                    {/* CTA Section - Desktop Only */}
+                    <div className="mt-6 pt-4 border-t border-gray-200">
+                      <div className="text-center">
+                        <h4 className="text-lg font-bold text-[#05325f] mb-2">
+                          Need Funding to Grow Your Business?
+                        </h4>
+                        <p className="text-gray-600 text-sm mb-4">
+                          Expert support for startup funding, MSME loans, and business growth.
+                        </p>
+                        <button
+                          onClick={toggleModal}
+                          className="group relative flex items-center justify-center bg-gradient-to-b from-[#05325f] to-[#5b93ca] text-white transition-all duration-500 rounded-2xl h-12 px-6 shadow-[0_10px_40px_rgba(91,147,202,0.3)] hover:shadow-[0_15px_50px_rgba(91,147,202,0.5)] transform hover:scale-105 overflow-hidden w-full"
+                        >
+                          <span className="relative z-10 text-white font-semibold flex items-center gap-2 drop-shadow-lg text-sm">
+                            Get Funding Assessment
+                            <svg
+                              className="w-4 h-4 transform group-hover:translate-x-2 group-hover:scale-110 transition-all duration-300"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={3}
+                                d="M13 9l3 3m0 0l-3 3m3-3H8"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </aside>
             )}
 
             {/* Main Content */}
-            <div className={tocItems.length > 0 ? "lg:col-span-3" : "lg:col-span-4"}>
+            <div className="lg:col-span-3">
               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden animate-fade-in">
                 <div className="p-8 md:p-12 lg:p-16">
                   {renderContentSections()}
@@ -696,6 +799,38 @@ export default function Blogview({ blog }) {
               </div>
             </div>
           </div>
+
+          {/* Mobile CTA Button - Only visible on mobile */}
+          <div className="mt-8 sm:hidden">
+            <button
+              onClick={toggleModal}
+              className="w-full group relative flex items-center justify-center bg-gradient-to-b from-[#05325f] to-[#5b93ca] text-white transition-all duration-500 rounded-2xl h-12 px-6 shadow-[0_10px_40px_rgba(91,147,202,0.3)] hover:shadow-[0_15px_50px_rgba(91,147,202,0.5)] transform hover:scale-105 overflow-hidden"
+            >
+              <span className="relative z-10 text-white font-semibold flex items-center gap-2 drop-shadow-lg text-sm">
+                Get Funding Assessment
+                <svg
+                  className="w-4 h-4 transform group-hover:translate-x-2 group-hover:scale-110 transition-all duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M13 9l3 3m0 0l-3 3m3-3H8"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+
+          {/* Free Consultation Modal */}
+          {isModalOpen && (
+            <div className="fixed inset-0 z-50">
+              <ContactUs onClose={closeModal} selectedService={selectedService} />
+            </div>
+          )}
         </div>
       </section>
     </>
