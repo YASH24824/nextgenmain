@@ -42,17 +42,54 @@ const parseJsonSafely = async (response, context = "lead-api") => {
 
 const ContactUs = ({ onClose, selectedService }) => {
   const popupRef = useRef(null);
+  const states = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+];
 
   // Form data state matching demo structure
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-    service: selectedService || "",
-  });
+  name: "",
+  email: "",
+  phone: "",
+  state: "",
+  city: "",
+  message: "",
+  service: selectedService || "",
+});
 
   // Status state from demo
+  const [isStateOpen, setIsStateOpen] = useState(false);
+const [stateSearch, setStateSearch] = useState("");
+const filteredStates = states.filter((state) =>
+  state.toLowerCase().includes(stateSearch.toLowerCase())
+);
   const [status, setStatus] = useState({
     loading: false,
     message: "",
@@ -147,17 +184,26 @@ const ContactUs = ({ onClose, selectedService }) => {
         message: "Please fill all required fields correctly",
         error: true,
       });
+      if (!formData.state) {
+  newErrors.state = "State is required";
+}
+
+if (!formData.city.trim()) {
+  newErrors.city = "City is required";
+}
       return;
     }
 
     try {
-      const payload = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        domain: normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN),
-        message: `${formData.message}, Service Type : ${selectedService}`,
-      };
+    const payload = {
+  name: formData.name,
+  email: formData.email,
+  phone: formData.phone,
+  state: formData.state,
+  city: formData.city,
+  domain: normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN),
+  message: `${formData.message}, Service Type : ${selectedService}`,
+};
 
       // const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
       //   method: "POST",
@@ -438,27 +484,86 @@ const ContactUs = ({ onClose, selectedService }) => {
               </div>
 
               {/* Email Field - Full width */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-1 text-xs">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="john@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                  title="Please enter a valid email address"
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#4975b8] focus:border-transparent outline-none transition-all text-sm ${
-                    errors.email ? "border-red-500" : "border-gray-300"
-                  }`}
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-                )}
-              </div>
+          <div>
+    <label className="block text-gray-700 font-medium mb-1 text-xs">
+      Email Address *
+    </label>
+
+    <input
+      type="email"
+      name="email"
+      placeholder="john@example.com"
+      value={formData.email}
+      onChange={handleChange}
+      required
+      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#4975b8] focus:border-transparent outline-none transition-all text-sm ${
+        errors.email ? "border-red-500" : "border-gray-300"
+      }`}
+    />
+
+    {errors.email && (
+      <p className="text-red-500 text-xs mt-1">
+        {errors.email}
+      </p>
+    )}
+  </div>
+
+  {/* State Dropdown */}
+
+  <div className="relative">
+    <label className="block text-gray-700 font-medium mb-1 text-xs">
+      State *
+    </label>
+
+    <button
+      type="button"
+      onClick={() => setIsStateOpen(!isStateOpen)}
+      className={`w-full px-3 py-2 border rounded-lg text-left text-sm bg-white ${
+        errors.state ? "border-red-500" : "border-gray-300"
+      }`}
+    >
+      {formData.state || "Select State"}
+    </button>
+
+    {isStateOpen && (
+      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl">
+
+        <input
+          type="text"
+          placeholder="Search state..."
+          value={stateSearch}
+          onChange={(e) => setStateSearch(e.target.value)}
+          className="w-full p-2 border-b outline-none text-sm"
+        />
+
+        <div className="max-h-56 overflow-y-auto">
+          {filteredStates.map((state) => (
+            <button
+              key={state}
+              type="button"
+              onClick={() => {
+                setFormData((prev) => ({
+                  ...prev,
+                  state,
+                }));
+                setIsStateOpen(false);
+                setStateSearch("");
+              }}
+              className="w-full text-left px-3 py-2 hover:bg-gray-100 text-sm"
+            >
+              {state}
+            </button>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {errors.state && (
+      <p className="text-red-500 text-xs mt-1">
+        {errors.state}
+      </p>
+    )}
+  </div>
 
               {/* Message Field */}
               <div>

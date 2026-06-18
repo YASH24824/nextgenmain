@@ -64,14 +64,37 @@ const parseJsonSafely = async (response, context = "lead-api") => {
 };
 
 const ContactPage = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-    service: "",
-  });
-
+const [formData, setFormData] = useState({
+  name: "",
+  email: "",
+  phone: "",
+  state: "",
+  message: "",
+});
+const states = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Tamil Nadu",
+  "Telangana",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+];
   const [status, setStatus] = useState({
     loading: false,
     message: "",
@@ -80,6 +103,12 @@ const ContactPage = () => {
 
   const [errors, setErrors] = useState({});
   const [focusedField, setFocusedField] = useState(null);
+  const [isStateOpen, setIsStateOpen] = useState(false);
+const [stateSearch, setStateSearch] = useState("");
+
+const filteredStates = states.filter((state) =>
+  state.toLowerCase().includes(stateSearch.toLowerCase())
+);
 
   const serviceOptions = [
     "Loans",
@@ -182,12 +211,12 @@ const ContactPage = () => {
     }
 
     try {
-      const payload = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        domain: normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN),
-        message: `${formData.message}, Service Type: ${formData.service}`,
+      const payload = {name: formData.name,
+  email: formData.email,
+  phone: formData.phone,
+  state: formData.state,
+  city: formData.city,
+  message: formData.message,
         recaptchaToken,
       };
 
@@ -230,7 +259,13 @@ const ContactPage = () => {
           payload,
           error: errorMessage,
         });
+if (!formData.state) {
+  newErrors.state = "State is required";
+}
 
+if (!formData.city.trim()) {
+  newErrors.city = "City is required";
+}
         setStatus({
           loading: false,
           message: errorMessage,

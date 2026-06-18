@@ -15,7 +15,7 @@
     "canvas-confetti": "^1.9.4",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.1.0",
-    "framer-motion": "^12.23.15",
+    "framer-motion": "^12.40.0",
     "lucide-react": "^0.542.0",
     "next": "^16.1.0",
     "postcss": "8.4.31",
