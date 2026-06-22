@@ -484,29 +484,7 @@ if (!formData.city.trim()) {
               </div>
 
               {/* Email Field - Full width */}
-          <div>
-    <label className="block text-gray-700 font-medium mb-1 text-xs">
-      Email Address *
-    </label>
-
-    <input
-      type="email"
-      name="email"
-      placeholder="john@example.com"
-      value={formData.email}
-      onChange={handleChange}
-      required
-      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#4975b8] focus:border-transparent outline-none transition-all text-sm ${
-        errors.email ? "border-red-500" : "border-gray-300"
-      }`}
-    />
-
-    {errors.email && (
-      <p className="text-red-500 text-xs mt-1">
-        {errors.email}
-      </p>
-    )}
-  </div>
+    zzz
 
   {/* State Dropdown */}
 

@@ -69,6 +69,7 @@ const [formData, setFormData] = useState({
   email: "",
   phone: "",
   state: "",
+  service: "",
   message: "",
 });
 const states = [
@@ -183,6 +184,12 @@ const filteredStates = states.filter((state) =>
     } else if (!/^[0-9]{10,15}$/.test(formData.phone)) {
       newErrors.phone = "Phone number should be between 10 and 15 digits";
     }
+
+    if (!formData.state) {
+  newErrors.state = "State is required";
+}
+
+
     if (!formData.message.trim()) newErrors.message = "Message is required";
     if (!formData.service.trim()) newErrors.service = "Service is required";
 
@@ -211,14 +218,15 @@ const filteredStates = states.filter((state) =>
     }
 
     try {
-      const payload = {name: formData.name,
+    const payload = {
+  name: formData.name,
   email: formData.email,
   phone: formData.phone,
   state: formData.state,
-  city: formData.city,
+  service: formData.service,
   message: formData.message,
-        recaptchaToken,
-      };
+  recaptchaToken,
+};
 
       // const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
       //   method: "POST",
@@ -263,9 +271,6 @@ if (!formData.state) {
   newErrors.state = "State is required";
 }
 
-if (!formData.city.trim()) {
-  newErrors.city = "City is required";
-}
         setStatus({
           loading: false,
           message: errorMessage,
@@ -274,13 +279,44 @@ if (!formData.city.trim()) {
         return;
       }
 
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        message: "",
-        service: "",
-      });
+    setFormData({
+  name: "",
+  email: "",
+  phone: "",
+  state: "",
+  service: "",
+  message: "",
+});
+const states = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+];
 
       setErrors({});
       setStatus({
@@ -491,53 +527,72 @@ if (!formData.city.trim()) {
                   </div>
                 </div>
 
-                {/* Email Field - Full width */}
-                <div className="relative group">
-                  <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <svg
-                        className={`w-4 h-4 transition-colors duration-300 ${
-                          focusedField === "email"
-                            ? "text-[#245586]"
-                            : "text-gray-400"
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </div>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      onFocus={() => setFocusedField("email")}
-                      onBlur={() => setFocusedField(null)}
-                      placeholder="Email Address *"
-                      className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 bg-white text-sm
-                        ${
-                          errors.email
-                            ? "border-red-500"
-                            : focusedField === "email"
-                              ? "border-[#245586]"
-                              : "border-gray-200"
-                        }
-                        hover:border-[#76a5d3] focus:bg-[#e8f4ff]/20`}
-                    />
-                  </div>
-                  {errors.email && (
-                    <p className="text-red-500 text-xs mt-1 ml-1">
-                      {errors.email}
-                    </p>
-                  )}
-                </div>
+          <div className="relative">
+    <button
+      type="button"
+      onClick={() => setIsStateOpen(!isStateOpen)}
+      className={`w-full px-3 py-2.5 text-black rounded-lg border bg-white text-left text-sm flex items-center justify-between ${
+        errors.state
+          ? "border-red-500"
+          : "border-gray-200 hover:border-[#76a5d3]"
+      }`}
+    >
+      <span>{formData.state || "Select State *"}</span>
+      <span>▼</span>
+    </button>
+
+    {isStateOpen && (
+      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
+        <input
+          type="text"
+          placeholder="Search state..."
+          value={stateSearch}
+          onChange={(e) => setStateSearch(e.target.value)}
+          className="w-full p-2 border-b outline-none text-sm"
+        />
+
+        <div className="max-h-56 text-black overflow-y-auto">
+          {filteredStates.length > 0 ? (
+            filteredStates.map((state) => (
+              <button
+                key={state}
+                type="button"
+                onClick={() => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    state,
+                  }));
+
+                  setErrors((prev) => ({
+                    ...prev,
+                    state: undefined,
+                  }));
+
+                  setIsStateOpen(false);
+                  setStateSearch("");
+                }}
+                className="w-full text-left px-3 py-2 hover:bg-gray-100 text-sm"
+              >
+                {state}
+              </button>
+            ))
+          ) : (
+            <div className="p-3 text-sm text-gray-500">
+              No state found
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+
+    {errors.state && (
+      <p className="text-red-500 text-xs mt-1">
+        {errors.state}
+      </p>
+    )}
+  </div>
+
+
 
                 {/* Service Type Dropdown - Full width */}
                 <div className="relative group">
