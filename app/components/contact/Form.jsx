@@ -3,22 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 
-// Ensure the domain we send to the leads API is always in a consistent format
-const normalizeDomain = (domain) => {
-  const fallback = "nextgenbusiness.co.in";
-  if (!domain) return fallback;
-  // Remove protocol if present
-  let cleanDomain = domain.replace(/^https?:\/\//, "");
-  // Remove trailing slash if present
-  cleanDomain = cleanDomain.replace(/\/$/, "");
-  return cleanDomain;
-};
-
-// Request a reCAPTCHA v3 token for the given action. Resolves with the token
-// string, or rejects if grecaptcha is not loaded / the site key is missing.
+/* -----------------------------
+   Helpers
+----------------------------- */
 const getRecaptchaToken = (action) =>
   new Promise((resolve, reject) => {
     const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+    console.log("🔐 Site Key:", siteKey ? "Exists" : "Missing");
 
     if (!siteKey) {
       reject(new Error("reCAPTCHA site key is not configured"));
@@ -26,76 +18,87 @@ const getRecaptchaToken = (action) =>
     }
 
     if (typeof window === "undefined" || !window.grecaptcha) {
-      reject(new Error("reCAPTCHA script has not loaded yet"));
+      console.log("⏳ Waiting for reCAPTCHA to load...");
+      // Wait for reCAPTCHA to load
+      const checkRecaptcha = () => {
+        if (window.grecaptcha) {
+          console.log("✅ reCAPTCHA loaded!");
+          window.grecaptcha.ready(() => {
+            window.grecaptcha
+              .execute(siteKey, { action })
+              .then(resolve)
+              .catch(reject);
+          });
+        } else {
+          setTimeout(checkRecaptcha, 100);
+        }
+      };
+      checkRecaptcha();
       return;
     }
 
     window.grecaptcha.ready(() => {
       window.grecaptcha
         .execute(siteKey, { action })
-        .then(resolve)
-        .catch(reject);
+        .then((token) => {
+          console.log("✅ reCAPTCHA token generated");
+          resolve(token);
+        })
+        .catch((error) => {
+          console.error("❌ reCAPTCHA error:", error);
+          reject(error);
+        });
     });
   });
-
-// Safely parse JSON responses, with robust logging for production debugging
-const parseJsonSafely = async (response, context = "lead-api") => {
+const parseJsonSafely = async (
+  response,
+  context = "contact-submit"
+) => {
   let data = {};
+
   try {
-    const contentType = response.headers.get("content-type") || "";
+    const contentType =
+      response.headers.get("content-type") || "";
+
     const text = await response.text();
 
-    if (text && contentType.includes("application/json")) {
+    if (
+      text &&
+      contentType.includes("application/json")
+    ) {
       data = JSON.parse(text);
     } else if (text) {
-      console.error("Non-JSON response from API", {
+      console.error("Non JSON API response", {
         context,
         status: response.status,
         statusText: response.statusText,
-        contentType,
         bodyPreview: text.substring(0, 500),
       });
     }
   } catch (error) {
-    console.error("Error parsing JSON response", { context, error });
+    console.error("JSON parse error", {
+      context,
+      error,
+    });
   }
 
   return data || {};
 };
 
+/* -----------------------------
+   Component
+----------------------------- */
+
 const ContactPage = () => {
-const [formData, setFormData] = useState({
-  name: "",
-  email: "",
-  phone: "",
-  state: "",
-  service: "",
-  message: "",
-});
-const states = [
-  "Andhra Pradesh",
-  "Arunachal Pradesh",
-  "Assam",
-  "Bihar",
-  "Chhattisgarh",
-  "Goa",
-  "Gujarat",
-  "Haryana",
-  "Himachal Pradesh",
-  "Jharkhand",
-  "Karnataka",
-  "Kerala",
-  "Madhya Pradesh",
-  "Maharashtra",
-  "Odisha",
-  "Punjab",
-  "Rajasthan",
-  "Tamil Nadu",
-  "Telangana",
-  "Uttar Pradesh",
-  "Uttarakhand",
-  "West Bengal",
-];
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    state: "",
+    service: "",
+    message: "",
+  });
+
   const [status, setStatus] = useState({
     loading: false,
     message: "",
@@ -104,12 +107,49 @@ const states = [
 
   const [errors, setErrors] = useState({});
   const [focusedField, setFocusedField] = useState(null);
-  const [isStateOpen, setIsStateOpen] = useState(false);
-const [stateSearch, setStateSearch] = useState("");
 
-const filteredStates = states.filter((state) =>
-  state.toLowerCase().includes(stateSearch.toLowerCase())
-);
+  const [isStateOpen, setIsStateOpen] =
+    useState(false);
+
+  const [stateSearch, setStateSearch] =
+    useState("");
+
+  const states = [
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal",
+  ];
+
+  const filteredStates = states.filter((state) =>
+    state
+      .toLowerCase()
+      .includes(stateSearch.toLowerCase())
+  );
 
   const serviceOptions = [
     "Loans",
@@ -119,230 +159,265 @@ const filteredStates = states.filter((state) =>
     "Consulting Services",
   ];
 
+
+
+    /* -----------------------------
+     Handle Input Change
+  ----------------------------- */
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Clear field-specific error
+    // Remove previous error
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
     }
 
-    // Validation logic
-    if (name === "email") {
-      const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-      if (value && !emailPattern.test(value)) {
-        e.target.setCustomValidity("Please enter a valid email address");
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "Please enter a valid email address",
-        }));
-      } else {
-        e.target.setCustomValidity("");
-      }
-    } else if (name === "phone") {
-      const phonePattern = /^[0-9]{10,15}$/;
-      if (value && !phonePattern.test(value)) {
-        e.target.setCustomValidity(
-          "Phone number should be between 10 and 15 digits",
-        );
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "Phone number should be between 10 and 15 digits",
-        }));
-      } else {
-        e.target.setCustomValidity("");
-      }
-    } else if (name === "name") {
-      if (!value.trim()) {
-        setErrors((prev) => ({ ...prev, [name]: "Name is required" }));
-      }
-    } else if (name === "message") {
-      if (!value.trim()) {
-        setErrors((prev) => ({ ...prev, [name]: "Message is required" }));
-      }
+    switch (name) {
+      case "name":
+        if (!value.trim()) {
+          setErrors((prev) => ({
+            ...prev,
+            name: "Name is required",
+          }));
+        }
+        break;
+
+      case "email":
+        const emailRegex =
+          /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+
+        if (value && !emailRegex.test(value)) {
+          e.target.setCustomValidity(
+            "Please enter a valid email address"
+          );
+
+          setErrors((prev) => ({
+            ...prev,
+            email: "Please enter a valid email address",
+          }));
+        } else {
+          e.target.setCustomValidity("");
+        }
+        break;
+
+      case "phone":
+        const phoneRegex = /^[0-9]{10,15}$/;
+
+        if (value && !phoneRegex.test(value)) {
+          e.target.setCustomValidity(
+            "Phone number should be between 10 and 15 digits"
+          );
+
+          setErrors((prev) => ({
+            ...prev,
+            phone:
+              "Phone number should be between 10 and 15 digits",
+          }));
+        } else {
+          e.target.setCustomValidity("");
+        }
+        break;
+
+      case "message":
+        if (!value.trim()) {
+          setErrors((prev) => ({
+            ...prev,
+            message: "Message is required",
+          }));
+        }
+        break;
+
+      case "service":
+        if (!value) {
+          setErrors((prev) => ({
+            ...prev,
+            service: "Please select a service",
+          }));
+        }
+        break;
+
+      default:
+        break;
     }
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus({ loading: true, message: "", error: false });
 
-    // Basic validation
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (
-      !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(formData.email)
-    ) {
-      newErrors.email = "Please enter a valid email address";
-    }
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone is required";
-    } else if (!/^[0-9]{10,15}$/.test(formData.phone)) {
-      newErrors.phone = "Phone number should be between 10 and 15 digits";
-    }
+    /* -----------------------------
+     Handle Form Submit
+  ----------------------------- */
 
-    if (!formData.state) {
-  newErrors.state = "State is required";
-}
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
+  setStatus({
+    loading: true,
+    message: "",
+    error: false,
+  });
 
-    if (!formData.message.trim()) newErrors.message = "Message is required";
-    if (!formData.service.trim()) newErrors.service = "Service is required";
+  const newErrors = {};
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setStatus({
-        loading: false,
-        message: "Please fill all required fields correctly",
-        error: true,
-      });
-      return;
-    }
+  // Validate Name
+  if (!formData.name.trim()) {
+    newErrors.name = "Name is required";
+  }
 
-    let recaptchaToken;
-    try {
-      recaptchaToken = await getRecaptchaToken("contact_form");
-    } catch (error) {
-      console.error("reCAPTCHA token generation failed:", error);
-      setStatus({
-        loading: false,
-        message:
-          "Verification failed. Please refresh the page and try again.",
-        error: true,
-      });
-      return;
-    }
+  // Validate Email
+  if (!formData.email.trim()) {
+    newErrors.email = "Email is required";
+  } else if (
+    !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(formData.email)
+  ) {
+    newErrors.email = "Please enter a valid email address";
+  }
 
-    try {
+  // Validate Phone
+  if (!formData.phone.trim()) {
+    newErrors.phone = "Phone number is required";
+  } else if (!/^[0-9]{10,15}$/.test(formData.phone)) {
+    newErrors.phone = "Phone number should be between 10 and 15 digits";
+  }
+
+  // Validate State
+  if (!formData.state) {
+    newErrors.state = "Please select your state";
+  }
+
+  // Validate Service
+  if (!formData.service) {
+    newErrors.service = "Please select a service";
+  }
+
+  // Validate Message
+  if (!formData.message.trim()) {
+    newErrors.message = "Message is required";
+  }
+
+  // Stop if validation fails
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    setStatus({
+      loading: false,
+      message: "Please fill all required fields correctly.",
+      error: true,
+    });
+    return;
+  }
+
+  // Generate reCAPTCHA Token
+  let recaptchaToken = "";
+
+  try {
+    console.log("🔐 Generating reCAPTCHA token...");
+    recaptchaToken = await getRecaptchaToken("contact_form");
+    console.log("✅ reCAPTCHA token generated:", recaptchaToken ? "Yes" : "No");
+  } catch (error) {
+    console.error("Failed to generate reCAPTCHA token:", error);
+    setStatus({
+      loading: false,
+      message: "Verification failed. Please refresh the page and try again.",
+      error: true,
+    });
+    return;
+  }
+
+  // 🔥 Check if token was generated
+  if (!recaptchaToken) {
+    console.error("❌ reCAPTCHA token is empty");
+    setStatus({
+      loading: false,
+      message: "Verification failed. Please refresh the page and try again.",
+      error: true,
+    });
+    return;
+  }
+
+  try {
+    // 🔥 FIX: Map form fields to what the API expects
     const payload = {
-  name: formData.name,
-  email: formData.email,
-  phone: formData.phone,
-  state: formData.state,
-  service: formData.service,
-  message: formData.message,
-  recaptchaToken,
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      state: formData.state,
+      service: formData.service,
+      message: formData.message,
+      platform: "website",
+      campaign_name: "Fully Interested",
+      ad_name: formData.service,
+      completed: false,
+      recaptchaToken: recaptchaToken,
+    };
+
+    console.log("📤 Sending payload to API:", payload);
+
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await parseJsonSafely(response, "contact-form");
+    console.log("📊 API Response:", data);
+
+    if (!response.ok) {
+      throw new Error(
+        data?.error || data?.message || "Something went wrong. Please try again."
+      );
+    }
+
+    // Reset Form
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      state: "",
+      service: "",
+      message: "",
+    });
+
+    setStateSearch("");
+    setIsStateOpen(false);
+    setErrors({});
+
+    setStatus({
+      loading: false,
+      message: "Thank you! Your message has been sent successfully.",
+      error: false,
+    });
+  } catch (error) {
+    console.error("Form Submission Error:", error);
+    setStatus({
+      loading: false,
+      message: error.message || "An error occurred. Please try again later.",
+      error: true,
+    });
+  }
 };
 
-      // const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
-      //     Origin: `https://${normalizeDomain(process.env.NEXT_PUBLIC_DOMAIN)}`,
-      //   },
-      //   credentials: "include",
-      //   body: JSON.stringify(payload),
-      // });
 
-      // 2️⃣ Call your LMS API (new one)
-      const response  = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await parseJsonSafely(response, "contact-page-submit");
-
-      if (!response.ok) {
-        const rawMessage =
-          data?.error ||
-          data?.message ||
-          (response.status
-            ? `Server error: ${response.status} ${response.statusText || ""}`
-            : "");
-
-        const errorMessage =
-          rawMessage || "Something went wrong. Please try again later.";
-
-        console.error("Contact page submission API error", {
-          status: response.status,
-          statusText: response.statusText,
-          payload,
-          error: errorMessage,
-        });
-if (!formData.state) {
-  newErrors.state = "State is required";
-}
-
-        setStatus({
-          loading: false,
-          message: errorMessage,
-          error: true,
-        });
-        return;
-      }
-
-    setFormData({
-  name: "",
-  email: "",
-  phone: "",
-  state: "",
-  service: "",
-  message: "",
-});
-const states = [
-  "Andhra Pradesh",
-  "Arunachal Pradesh",
-  "Assam",
-  "Bihar",
-  "Chhattisgarh",
-  "Goa",
-  "Gujarat",
-  "Haryana",
-  "Himachal Pradesh",
-  "Jharkhand",
-  "Karnataka",
-  "Kerala",
-  "Madhya Pradesh",
-  "Maharashtra",
-  "Manipur",
-  "Meghalaya",
-  "Mizoram",
-  "Nagaland",
-  "Odisha",
-  "Punjab",
-  "Rajasthan",
-  "Sikkim",
-  "Tamil Nadu",
-  "Telangana",
-  "Tripura",
-  "Uttar Pradesh",
-  "Uttarakhand",
-  "West Bengal",
-];
-
-      setErrors({});
-      setStatus({
-        loading: false,
-        message: "Thank you! Your message has been sent successfully.",
-        error: false,
-      });
-    } catch (error) {
-      console.error("Form submission error:", error);
-      setStatus({
-        loading: false,
-        message: "An error occurred. Please try again later.",
-        error: true,
-      });
-    }
-  };
-
-  return (
+    return (
     <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[#e8f4ff] py-4 px-4 sm:px-6 lg:py-8">
       <div className="w-full max-w-6xl mx-auto relative z-10 bg-white rounded-2xl shadow-xl overflow-hidden border border-[#76a5d3]/20">
         <div className="grid lg:grid-cols-2">
-          {/* Left Side - Visual Section - More Compact */}
+
+          {/* Left Side */}
           <div className="relative min-h-[300px] lg:min-h-[500px]">
             <div className="absolute inset-0 w-full bg-gradient-to-tr from-[#1c4268] to-[#76a5d3] opacity-95 pointer-events-none" />
+
             <div className="absolute inset-0 bg-gradient-to-t from-[#245586]/90 via-[#245586]/50 to-transparent flex flex-col items-center justify-center p-4 sm:p-6 text-center">
-              {/* Icon - Smaller */}
+
+              {/* Icon */}
               <div className="mb-6 sm:mb-8 w-12 h-12 sm:w-14 sm:h-14 bg-[#245586] rounded-xl flex items-center justify-center shadow-lg">
                 <svg
                   className="w-6 h-6 sm:w-7 sm:h-7 text-white"
@@ -359,19 +434,15 @@ const states = [
                 </svg>
               </div>
 
-              {/* Title - Smaller */}
               <h2 className="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3 drop-shadow">
                 Let&apos;s Build Something Great Together
               </h2>
 
-              <p
-                className={`text-white/90 text-xs sm:text-sm leading-relaxed max-w-xs sm:max-w-sm mb-3 sm:mb-4 drop-shadow px-2`}
-              >
-                Partner with industry experts who deliver innovative solutions
-                tailored to your unique business needs.
+              <p className="text-white/90 text-xs sm:text-sm leading-relaxed max-w-xs sm:max-w-sm mb-3 sm:mb-4 drop-shadow px-2">
+                Partner with industry experts who deliver innovative
+                solutions tailored to your unique business needs.
               </p>
 
-              {/* Badges - Smaller */}
               <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mt-2 px-2">
                 {["24/7 Support", "Expert Team", "Fast Response"].map(
                   (text, idx) => (
@@ -392,29 +463,32 @@ const states = [
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-                      <span className={`text-[#05325f] font-semibold text-xs`}>
+
+                      <span className="text-[#05325f] font-semibold text-xs">
                         {text}
                       </span>
                     </div>
-                  ),
+                  )
                 )}
               </div>
             </div>
           </div>
 
-          {/* Right Side - Form Section - More Compact */}
+          {/* Right Side - Form */}
           <div className="p-2 sm:p-6 lg:p-8 bg-white">
             <div className="max-w-md mx-auto">
+
               <div className="mb-4 sm:mb-6">
                 <h3 className="text-transparent bg-clip-text bg-gradient-to-tr from-[#245586] to-[#76a5d3] font-bold text-xl sm:text-2xl mb-1">
                   Send us a Message
                 </h3>
-                <p className={`text-gray-600 text-xs sm:text-sm`}>
-                  We&apos;ll get back to you within 24 hours
+
+                <p className="text-gray-600 text-xs sm:text-sm">
+                  We&apos;ll get back to you within 24 hours.
                 </p>
               </div>
 
-              {/* Status Message */}
+              {/* Status */}
               {status.message && (
                 <div
                   className={`mb-4 p-3 rounded-lg text-white text-center font-medium shadow text-sm ${
@@ -427,15 +501,20 @@ const states = [
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-                {/* Grid for Name and Phone side by side */}
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-3 sm:space-y-4"
+              >
+
+                                {/* Name & Phone */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Name Field */}
+
+                  {/* Name */}
                   <div className="relative group">
                     <div className="relative">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
                         <svg
-                          className={`w-4 h-4 transition-colors duration-300 ${
+                          className={`w-4 h-4 ${
                             focusedField === "name"
                               ? "text-[#245586]"
                               : "text-gray-400"
@@ -452,6 +531,7 @@ const states = [
                           />
                         </svg>
                       </div>
+
                       <input
                         type="text"
                         name="name"
@@ -460,30 +540,29 @@ const states = [
                         onFocus={() => setFocusedField("name")}
                         onBlur={() => setFocusedField(null)}
                         placeholder="Full Name *"
-                        className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 bg-white text-sm
-                          ${
-                            errors.name
-                              ? "border-red-500"
-                              : focusedField === "name"
-                                ? "border-[#245586]"
-                                : "border-gray-200"
-                          }
-                          hover:border-[#76a5d3] focus:bg-[#e8f4ff]/20`}
+                        className={`w-full text-black pl-10 pr-3 py-2.5 rounded-lg border outline-none text-sm ${
+                          errors.name
+                            ? "border-red-500"
+                            : focusedField === "name"
+                            ? "border-[#245586]"
+                            : "border-gray-200"
+                        }`}
                       />
                     </div>
+
                     {errors.name && (
-                      <p className="text-red-500 text-xs mt-1 ml-1">
+                      <p className="text-red-500 text-xs mt-1">
                         {errors.name}
                       </p>
                     )}
                   </div>
 
-                  {/* Phone Field */}
+                  {/* Phone */}
                   <div className="relative group">
                     <div className="relative">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
                         <svg
-                          className={`w-4 h-4 transition-colors duration-300 ${
+                          className={`w-4 h-4 ${
                             focusedField === "phone"
                               ? "text-[#245586]"
                               : "text-gray-400"
@@ -500,6 +579,7 @@ const states = [
                           />
                         </svg>
                       </div>
+
                       <input
                         type="tel"
                         name="phone"
@@ -508,98 +588,152 @@ const states = [
                         onFocus={() => setFocusedField("phone")}
                         onBlur={() => setFocusedField(null)}
                         placeholder="Mobile Number *"
-                        className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 bg-white text-sm
-                          ${
-                            errors.phone
-                              ? "border-red-500"
-                              : focusedField === "phone"
-                                ? "border-[#245586]"
-                                : "border-gray-200"
-                          }
-                          hover:border-[#76a5d3] focus:bg-[#e8f4ff]/20`}
+                        className={`w-full text-black pl-10 pr-3 py-2.5 rounded-lg border outline-none text-sm ${
+                          errors.phone
+                            ? "border-red-500"
+                            : focusedField === "phone"
+                            ? "border-[#245586]"
+                            : "border-gray-200"
+                        }`}
                       />
                     </div>
+
                     {errors.phone && (
-                      <p className="text-red-500 text-xs mt-1 ml-1">
+                      <p className="text-red-500 text-xs mt-1">
                         {errors.phone}
                       </p>
                     )}
                   </div>
+
                 </div>
 
-          <div className="relative">
-    <button
-      type="button"
-      onClick={() => setIsStateOpen(!isStateOpen)}
-      className={`w-full px-3 py-2.5 text-black rounded-lg border bg-white text-left text-sm flex items-center justify-between ${
-        errors.state
-          ? "border-red-500"
-          : "border-gray-200 hover:border-[#76a5d3]"
-      }`}
-    >
-      <span>{formData.state || "Select State *"}</span>
-      <span>▼</span>
-    </button>
-
-    {isStateOpen && (
-      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
-        <input
-          type="text"
-          placeholder="Search state..."
-          value={stateSearch}
-          onChange={(e) => setStateSearch(e.target.value)}
-          className="w-full p-2 border-b outline-none text-sm"
-        />
-
-        <div className="max-h-56 text-black overflow-y-auto">
-          {filteredStates.length > 0 ? (
-            filteredStates.map((state) => (
-              <button
-                key={state}
-                type="button"
-                onClick={() => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    state,
-                  }));
-
-                  setErrors((prev) => ({
-                    ...prev,
-                    state: undefined,
-                  }));
-
-                  setIsStateOpen(false);
-                  setStateSearch("");
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-gray-100 text-sm"
-              >
-                {state}
-              </button>
-            ))
-          ) : (
-            <div className="p-3 text-sm text-gray-500">
-              No state found
-            </div>
-          )}
-        </div>
-      </div>
-    )}
-
-    {errors.state && (
-      <p className="text-red-500 text-xs mt-1">
-        {errors.state}
-      </p>
-    )}
-  </div>
-
-
-
-                {/* Service Type Dropdown - Full width */}
+                {/* Email */}
                 <div className="relative group">
                   <div className="relative">
                     <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
                       <svg
-                        className={`w-4 h-4 transition-colors duration-300 ${
+                        className={`w-4 h-4 ${
+                          focusedField === "email"
+                            ? "text-[#245586]"
+                            : "text-gray-400"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 12H8m8-6H8m-2 14h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      onFocus={() => setFocusedField("email")}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="Email Address *"
+                      className={`w-full text-black pl-10 pr-3 py-2.5 rounded-lg border outline-none text-sm ${
+                        errors.email
+                          ? "border-red-500"
+                          : focusedField === "email"
+                          ? "border-[#245586]"
+                          : "border-gray-200"
+                      }`}
+                    />
+                  </div>
+
+                  {errors.email && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.email}
+                    </p>
+                  )}
+                </div>
+
+                {/* State */}
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setIsStateOpen(!isStateOpen)}
+                    className={`w-full px-3 py-2.5 rounded-lg border bg-white text-left flex justify-between items-center text-black ${
+                      errors.state
+                        ? "border-red-500"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    <span>
+                      {formData.state || "Select State *"}
+                    </span>
+
+                    <span>▼</span>
+                  </button>
+
+                  {isStateOpen && (
+                    <div className="absolute z-50 mt-1 w-full bg-white border rounded-lg shadow-lg text-black">
+                      <input
+                        type="text"
+                        placeholder="Search state..."
+                        value={stateSearch}
+                        onChange={(e) =>
+                          setStateSearch(e.target.value)
+                        }
+                        className="w-full border-b p-2 outline-none text-sm"
+                      />
+
+                      <div className="max-h-56 overflow-y-auto">
+                        {filteredStates.length ? (
+                          filteredStates.map((state) => (
+                            <button
+                              key={state}
+                              type="button"
+                              onClick={() => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  state,
+                                }));
+
+                                setErrors((prev) => ({
+                                  ...prev,
+                                  state: undefined,
+                                }));
+
+                                setStateSearch("");
+                                setIsStateOpen(false);
+                              }}
+                              className="w-full text-left px-3 py-2 hover:bg-gray-100"
+                            >
+                              {state}
+                            </button>
+                          ))
+                        ) : (
+                          <div className="p-3 text-sm text-gray-500">
+                            No state found
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {errors.state && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.state}
+                    </p>
+                  )}
+                </div>
+
+
+                                {/* Service Dropdown */}
+                <div className="relative group">
+                  <div className="relative">
+
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <svg
+                        className={`w-4 h-4 ${
                           focusedField === "service"
                             ? "text-[#245586]"
                             : "text-gray-400"
@@ -616,29 +750,35 @@ const states = [
                         />
                       </svg>
                     </div>
+
                     <select
                       name="service"
                       value={formData.service}
                       onChange={handleChange}
                       onFocus={() => setFocusedField("service")}
                       onBlur={() => setFocusedField(null)}
-                      className={`w-full pl-10 pr-8 py-2.5 rounded-lg border transition-all duration-300 outline-none text-gray-900 bg-white text-sm appearance-none cursor-pointer
-                        ${
-                          errors.service
-                            ? "border-red-500"
-                            : focusedField === "service"
-                              ? "border-[#245586]"
-                              : "border-gray-200"
-                        }
-                        hover:border-[#76a5d3] focus:bg-[#e8f4ff]/20`}
+                      className={`w-full pl-10 pr-8 py-2.5 rounded-lg border transition-all duration-300 outline-none bg-white appearance-none cursor-pointer text-sm text-black ${
+                        errors.service
+                          ? "border-red-500"
+                          : focusedField === "service"
+                          ? "border-[#245586]"
+                          : "border-gray-200"
+                      }`}
                     >
-                      <option value="">Select Service Type *</option>
-                      {serviceOptions.map((option, index) => (
-                        <option key={index} value={option}>
+                      <option value="">
+                        Select Service Type *
+                      </option>
+
+                      {serviceOptions.map((option) => (
+                        <option
+                          key={option}
+                          value={option}
+                        >
                           {option}
                         </option>
                       ))}
                     </select>
+
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                       <svg
                         className="w-4 h-4 text-gray-400"
@@ -654,23 +794,27 @@ const states = [
                         />
                       </svg>
                     </div>
+
                   </div>
+
                   {errors.service && (
-                    <p className="text-red-500 text-xs mt-1 ml-1">
+                    <p className="text-red-500 text-xs mt-1">
                       {errors.service}
                     </p>
                   )}
                 </div>
 
-                {/* Message Field - Full width */}
+                {/* Message */}
                 <div className="relative group">
+
                   <div className="relative">
+
                     <div className="absolute left-3 top-3 pointer-events-none">
                       <svg
-                        className={`w-4 h-4 transition-colors duration-300 ${
+                        className={`w-4 h-4 ${
                           focusedField === "message"
                             ? "text-[#245586]"
-                            : "text-gray-400"
+                            : "text-black"
                         }`}
                         fill="none"
                         stroke="currentColor"
@@ -684,59 +828,70 @@ const states = [
                         />
                       </svg>
                     </div>
+
                     <textarea
                       name="message"
                       value={formData.message}
+                    
                       onChange={handleChange}
-                      onFocus={() => setFocusedField("message")}
-                      onBlur={() => setFocusedField(null)}
+                      onFocus={() =>
+                        setFocusedField("message")
+                      }
+                      onBlur={() =>
+                        setFocusedField(null)
+                      }
                       placeholder="Your Message *"
-                      rows="2"
-                      className={`w-full pl-10 pr-3 py-2.5 rounded-lg border transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 bg-white text-sm resize-none
-                        ${
-                          errors.message
-                            ? "border-red-500"
-                            : focusedField === "message"
-                              ? "border-[#245586]"
-                              : "border-gray-200"
-                        }
-                        hover:border-[#76a5d3] focus:bg-[#e8f4ff]/20`}
+                      rows={3}
+                      className={`w-full pl-10 pr-3 py-2.5 rounded-lg border outline-none resize-none text-sm text-black ${
+                        errors.message
+                          ? "border-red-500"
+                          : focusedField === "message"
+                          ? "border-[#245586]"
+                          : "border-gray-200"
+                      }`}
                     />
+
                   </div>
+
                   {errors.message && (
-                    <p className="text-red-500 text-xs mt-1 ml-1">
+                    <p className="text-red-500 text-xs mt-1">
                       {errors.message}
                     </p>
                   )}
                 </div>
 
-                {/* Terms Checkbox */}
+                {/* Terms & Conditions */}
+
                 <div className="flex items-start pt-1">
-                  {/* <input
-                    type="checkbox"
-                    id="terms"
-                    required
-                    className="mt-0.5 mr-2"
-                  /> */}
-                  <label htmlFor="terms" className="text-xs text-gray-600">
+
+                  <label
+                    htmlFor="terms"
+                    className="text-xs text-black"
+                  >
                     By submitting this form, you agree to our{" "}
+
                     <Link
                       href="/terms-condition"
                       className="text-[#245586] hover:underline font-medium"
                     >
                       Terms & Conditions
-                    </Link>{" "}
-                    and{" "}
+                    </Link>
+
+                    {" "}and{" "}
+
                     <Link
                       href="/privacy-policy"
                       className="text-[#245586] hover:underline font-medium"
                     >
                       Privacy Policy
                     </Link>
+
                   </label>
+
                 </div>
 
-                {/* Submit Button */}
+
+                                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={status.loading}
@@ -746,7 +901,7 @@ const states = [
                     {status.loading ? (
                       <>
                         <svg
-                          className="animate-spin -ml-1 mr-2 h-3 w-3 sm:h-4 sm:w-4 text-white"
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
                           fill="none"
                           viewBox="0 0 24 24"
                         >
@@ -757,20 +912,23 @@ const states = [
                             r="10"
                             stroke="currentColor"
                             strokeWidth="4"
-                          ></circle>
+                          />
+
                           <path
                             className="opacity-75"
                             fill="currentColor"
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
+                          />
                         </svg>
-                        Sending Message...
+
+                        Sending...
                       </>
                     ) : (
                       <>
                         Submit
+
                         <svg
-                          className="ml-2 w-3 h-3 sm:w-4 sm:h-4 transform group-hover:translate-x-1 transition-transform"
+                          className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -785,23 +943,30 @@ const states = [
                       </>
                     )}
                   </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#76a5d3] to-[#245586] transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#76a5d3] to-[#245586] scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500" />
                 </button>
 
-                <div className="mt-3 flex items-center justify-center space-x-2 text-gray-600 text-xs">
+                {/* Security Notice */}
+                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
                   <svg
-                    className="w-3 h-3 sm:w-4 sm:h-4 text-green-500"
+                    className="w-4 h-4 text-green-500"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
                     <path
                       fillRule="evenodd"
-                      d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                       clipRule="evenodd"
+                      d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                     />
                   </svg>
-                  <span>Your information is secure and confidential</span>
+
+                  <span>
+                    Your information is secure and protected by Google
+                    reCAPTCHA.
+                  </span>
                 </div>
+
               </form>
             </div>
           </div>

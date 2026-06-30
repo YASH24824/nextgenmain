@@ -4,7 +4,7 @@ import schemesData from "../data/schemes.json";
 import ContactUs from "./ContactUs";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SCORING ENGINE
+// SCORING ENGINE (Same as before - keeping it concise)
 // ─────────────────────────────────────────────────────────────────────────────
 
 const WEIGHTS = {
@@ -179,7 +179,9 @@ const BADGE = {
 
 const STEPS = {
   GREETING: "greeting",
+  ASK_NAME: "ask_name",
   CONFIRM: "confirm",
+  PHONE: "phone",
   CAPITAL: "capital",
   SECTOR: "sector",
   ENTITY: "entity",
@@ -187,6 +189,7 @@ const STEPS = {
   STATE: "state",
   DPIIT: "dpiit",
   FEMALE: "female",
+  EMAIL: "email",
   LOADING: "loading",
   RESULTS: "results",
   LEAD: "lead",
@@ -305,7 +308,6 @@ function ResultCard({ item, onUnlockClick }) {
           >
             {item.funding_type}
           </span>
-   
         </div>
         <div
           style={{
@@ -331,38 +333,37 @@ function ResultCard({ item, onUnlockClick }) {
         >
           {item.description || "No description available"}
         </div>
-          <button
-        onClick={() => onUnlockClick(item)}
-        style={{
-          flexShrink: 0,
-          background: "#1C4268",
-          color: "white",
-          border: "none",
-          borderRadius: 8,
-          padding: "8px 14px",
-          fontSize: 11,
-          fontWeight: 600,
-          cursor: "pointer",
-          fontFamily: "inherit",
-          whiteSpace: "nowrap",
-          transition: "all 0.15s",
-          alignSelf: "center",
-          minHeight: 36,
-          marginTop:2
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = "#0f2a44";
-          e.currentTarget.style.transform = "scale(1.05)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = "#1C4268";
-          e.currentTarget.style.transform = "scale(1)";
-        }}
-      >
-        Click to Unlock Opportunities →
-      </button>
+        <button
+          onClick={() => onUnlockClick(item)}
+          style={{
+            flexShrink: 0,
+            background: "#1C4268",
+            color: "white",
+            border: "none",
+            borderRadius: 8,
+            padding: "8px 14px",
+            fontSize: 11,
+            fontWeight: 600,
+            cursor: "pointer",
+            fontFamily: "inherit",
+            whiteSpace: "nowrap",
+            transition: "all 0.15s",
+            alignSelf: "center",
+            minHeight: 36,
+            marginTop: 2,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#0f2a44";
+            e.currentTarget.style.transform = "scale(1.05)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#1C4268";
+            e.currentTarget.style.transform = "scale(1)";
+          }}
+        >
+          Click to Unlock Opportunities →
+        </button>
       </div>
-    
     </div>
   );
 }
@@ -391,21 +392,34 @@ function LoaderBar() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// FUNDING DATA
+// MAIN COMPONENT
 // ─────────────────────────────────────────────────────────────────────────────
 
 const fundingData = schemesData;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MAIN COMPONENT
-// ─────────────────────────────────────────────────────────────────────────────
-
 export default function FundingChatbot({ data = fundingData }) {
+  console.log("🚀🚀🚀 FUNDING CHATBOT MOUNTED! 🚀🚀🚀");
+
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [step, setStep] = useState(STEPS.GREETING);
   const [showContactUs, setShowContactUs] = useState(false);
   const [selectedScheme, setSelectedScheme] = useState(null);
+
+  const [userData, setUserData] = useState({
+    name: "",
+    phone: "",
+    state: "",
+    capital: "",
+    amount: "",
+    sector: "",
+    entityType: "",
+    isDpiit: false,
+    isFemaleFounder: false,
+    email: "",
+    platform: "website chatbot",
+  });
+
   const [filters, setFilters] = useState({
     fundingType: "Any",
     sector: "",
@@ -415,21 +429,243 @@ export default function FundingChatbot({ data = fundingData }) {
     isDpiit: false,
     isFemaleFounder: false,
   });
+
   const [typing, setTyping] = useState(false);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [selectVal, setSelectVal] = useState("");
   const [leadForm, setLeadForm] = useState({ name: "", email: "", phone: "" });
   const endRef = useRef(null);
-  const initialized = useRef(false);
+  const hasGreeted = useRef(false);
   const options = extractOptions(data);
+
+  // 🔥 FIX: Use REFS for values that need to persist across renders
+  const shouldAutoSaveRef = useRef(false);
+  const userDataRef = useRef({ ...userData });
+  const autoSaveTimer = useRef(null);
+  const isApiHit = useRef(false);
+  const timerStartTime = useRef(null);
+
+  // Update refs when userData changes
+  useEffect(() => {
+    userDataRef.current = { ...userData };
+  }, [userData]);
+
+  console.log("📊 Component state:", {
+    shouldAutoSave: shouldAutoSaveRef.current,
+    isApiHit: isApiHit.current,
+    phone: userData.phone,
+    hasPhone: !!userData.phone,
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SAVE TO DATABASE FUNCTION
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  const saveToDatabase = useCallback(async (data, campaignName) => {
+    console.log("💾💾💾 saveToDatabase CALLED! 💾💾💾", { campaignName, data });
+
+    if (isApiHit.current) {
+      console.log("⚠️ API already hit, skipping");
+      return;
+    }
+
+    try {
+      const payload = {
+        ...data,
+        campaign_name: campaignName,
+        recaptchaToken: "auto_save_no_captcha",
+        timestamp: new Date().toISOString(),
+      };
+
+      console.log("📤 Sending payload:", payload);
+
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+      console.log("📊 API Response:", result);
+
+      if (response.ok) {
+        console.log(`✅ Saved successfully with campaign: ${campaignName}`);
+        isApiHit.current = true;
+        shouldAutoSaveRef.current = false;
+        return result;
+      } else {
+        console.error("❌ Save failed:", result);
+      }
+    } catch (error) {
+      console.error("❌ Save error:", error);
+    }
+  }, []);
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // AUTO SAVE FUNCTION - Uses refs for reliable data
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  const autoSave = useCallback(() => {
+    console.log("⏰⏰⏰ autoSave FUNCTION CALLED! ⏰⏰⏰");
+    
+    // Get current data from refs
+    const currentShouldAutoSave = shouldAutoSaveRef.current;
+    const currentUserData = userDataRef.current;
+    
+    console.log("📊 Current state from refs:", {
+      isApiHit: isApiHit.current,
+      shouldAutoSave: currentShouldAutoSave,
+      hasPhone: !!currentUserData.phone,
+      phone: currentUserData.phone,
+      name: currentUserData.name,
+    });
+
+    if (isApiHit.current) {
+      console.log("⚠️ API already hit, skipping");
+      return;
+    }
+
+    if (!currentShouldAutoSave) {
+      console.log("⚠️ shouldAutoSave is false, skipping");
+      return;
+    }
+
+    if (!currentUserData.phone) {
+      console.log("⚠️ No phone number to save!");
+      console.log("📊 Current userData:", currentUserData);
+      return;
+    }
+
+    console.log("⏰ Auto-save triggered! Saving with '50% Interested'");
+    console.log("📊 Data to save:", currentUserData);
+    saveToDatabase(currentUserData, "50% Interested");
+  }, [saveToDatabase]);
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // START TIMER - 1 MINUTE
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  const startAutoSaveTimer = useCallback(() => {
+    console.log("⏱️⏱️⏱️ startAutoSaveTimer CALLED! ⏱️⏱️⏱️");
+
+    // Clear existing timer
+    if (autoSaveTimer.current) {
+      console.log("⏹️ Clearing existing timer");
+      clearTimeout(autoSaveTimer.current);
+      autoSaveTimer.current = null;
+    }
+
+    console.log("⏱️ Starting 1-minute timer...");
+    timerStartTime.current = Date.now();
+
+    autoSaveTimer.current = setTimeout(() => {
+      const elapsed = ((Date.now() - timerStartTime.current) / 1000).toFixed(1);
+      console.log(`⏰ ${elapsed} seconds passed! Calling autoSave...`);
+      autoSave();
+    }, 1 * 60 * 1000); // 🔥 1 MINUTE
+
+    console.log(
+      `✅ Timer started! Will fire at: ${new Date(Date.now() + 1 * 60 * 1000).toLocaleTimeString()}`
+    );
+  }, [autoSave]);
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // CANCEL TIMER
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  const cancelAutoSaveTimer = useCallback(() => {
+    if (autoSaveTimer.current) {
+      console.log("⏹️ Cancelling timer");
+      clearTimeout(autoSaveTimer.current);
+      autoSaveTimer.current = null;
+      timerStartTime.current = null;
+    }
+  }, []);
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // CLEANUP
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    return () => {
+      if (autoSaveTimer.current) {
+        clearTimeout(autoSaveTimer.current);
+      }
+    };
+  }, []);
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // RESET ALL
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  const resetAll = () => {
+    setMessages([]);
+    setFilters({
+      fundingType: "Any",
+      sector: "",
+      entityType: "",
+      amountRange: null,
+      state: "",
+      isDpiit: false,
+      isFemaleFounder: false,
+    });
+    setUserData({
+      name: "",
+      phone: "",
+      state: "",
+      capital: "",
+      amount: "",
+      sector: "",
+      entityType: "",
+      isDpiit: false,
+      isFemaleFounder: false,
+      email: "",
+      platform: "website chatbot",
+    });
+    userDataRef.current = {
+      name: "",
+      phone: "",
+      state: "",
+      capital: "",
+      amount: "",
+      sector: "",
+      entityType: "",
+      isDpiit: false,
+      isFemaleFounder: false,
+      email: "",
+      platform: "website chatbot",
+    };
+    setLeadForm({ name: "", email: "", phone: "" });
+    setSelectVal("");
+    setInputDisabled(false);
+    shouldAutoSaveRef.current = false;
+    isApiHit.current = false;
+    timerStartTime.current = null;
+    hasGreeted.current = false;
+
+    if (autoSaveTimer.current) {
+      clearTimeout(autoSaveTimer.current);
+      autoSaveTimer.current = null;
+    }
+
+    setStep(STEPS.GREETING);
+    setShowContactUs(false);
+    setSelectedScheme(null);
+    setTimeout(() => {
+      if (open) {
+        hasGreeted.current = true;
+        startGreeting();
+      }
+    }, 300);
+  };
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typing]);
 
   useEffect(() => {
-    if (open && !initialized.current) {
-      initialized.current = true;
+    if (open && !hasGreeted.current) {
+      hasGreeted.current = true;
       startGreeting();
     }
   }, [open]);
@@ -445,7 +681,7 @@ export default function FundingChatbot({ data = fundingData }) {
           res();
         }, delay),
       ),
-    [],
+    []
   );
 
   const userMsg = (text) =>
@@ -463,30 +699,6 @@ export default function FundingChatbot({ data = fundingData }) {
       }, ms);
     });
 
-  const resetAll = () => {
-    setMessages([]);
-    setFilters({
-      fundingType: "Any",
-      sector: "",
-      entityType: "",
-      amountRange: null,
-      state: "",
-      isDpiit: false,
-      isFemaleFounder: false,
-    });
-    setLeadForm({ name: "", email: "", phone: "" });
-    setSelectVal("");
-    setInputDisabled(false);
-    initialized.current = false;
-    setStep(STEPS.GREETING);
-    setShowContactUs(false);
-    setSelectedScheme(null);
-    // Re-initialize the chat
-    setTimeout(() => {
-      startGreeting();
-    }, 300);
-  };
-
   const handleUnlockClick = (scheme) => {
     setSelectedScheme(scheme);
     setShowContactUs(true);
@@ -497,82 +709,177 @@ export default function FundingChatbot({ data = fundingData }) {
 
   async function startGreeting() {
     await typeFor(700);
-    await botMsg("👋 Hi there! I'm FundBot, your personal funding advisor.");
+    await botMsg("👋 Hello! I'm UdyamMitra.");
     await typeFor(800);
     await botMsg(
-      "I can help you discover grants, loans, equity, and subsidies available for your startup. Would you like to find your funding opportunity?",
+      "I'm here to help you discover government schemes, funding opportunities, subsidies, grants, and the right support for your business or startup."
+    );
+    await typeFor(600);
+    await botMsg("Before we begin, may I know your name?");
+    setStep(STEPS.ASK_NAME);
+  }
+
+  async function onNameSubmit(name) {
+    if (!name.trim()) return;
+    setInputDisabled(true);
+    userMsg(name);
+    setUserData((prev) => ({ ...prev, name: name.trim() }));
+    setSelectVal("");
+
+    await typeFor(600);
+    await botMsg(`Nice to meet you, ${name.trim()}! 😊`);
+    await typeFor(500);
+    await botMsg(
+      "Would you like to find funding opportunities tailored to your business?"
     );
     setStep(STEPS.CONFIRM);
+    setInputDisabled(false);
   }
 
   async function onConfirm(opt) {
     setInputDisabled(true);
     userMsg(opt.label);
-   if (opt.value === "no") {
-  await typeFor(600);
-
-  await botMsg(
-    <>
-      <div>
-        ⚠️ <strong>You're missing out on your best funding opportunities!</strong>
-        <br />
-        <br />
-        Don't let valuable government schemes and funding benefits slip away.
-        Our experts can help you find the right opportunities for your business.
-      </div>
-
-      <div style={{ marginTop: "16px" }}>
-        <a
-          href="tel:9737388388"
-          style={{
-            display: "inline-block",
-            padding: "4px 4px",
-            borderRadius: 20,
-            border: "none",
-            background: "#1C4268",
-            color: "white",
-            fontSize: 13,
-            fontWeight: 400,
-            cursor: "pointer",
-            fontFamily: "inherit",
-            textAlign: "center",
-            textDecoration: "none",
-            transition: "all 0.15s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "#0f2a44";
-            e.currentTarget.style.transform = "scale(1.02)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "#1C4268";
-            e.currentTarget.style.transform = "scale(1)";
-          }}
-        >
-        📞 Speak with an Expert: 9737388388
-        </a>
-      </div>
-    </>
-  );
-
-  setStep(STEPS.DONE);
-  setInputDisabled(false);
-  return;
-} else {
-      await typeFor(700);
-      await botMsg(
-        "Excellent! Let's find the best match for you. I'll ask a few quick questions."
-      );
+    if (opt.value === "no") {
       await typeFor(600);
-      await botMsg("What type of capital are you looking for?");
-      setStep(STEPS.CAPITAL);
+      await botMsg(
+        <>
+          <div>
+            ⚠️ <strong>You're missing out on your best funding opportunities!</strong>
+            <br />
+            <br />
+            Don't let valuable government schemes and funding benefits slip away.
+            Our experts can help you find the right opportunities for your business.
+          </div>
+          <div style={{ marginTop: "16px" }}>
+            <a
+              href="tel:9737388388"
+              style={{
+                display: "inline-block",
+                padding: "4px 4px",
+                borderRadius: 20,
+                border: "none",
+                background: "#1C4268",
+                color: "white",
+                fontSize: 13,
+                fontWeight: 400,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                textAlign: "center",
+                textDecoration: "none",
+                transition: "all 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#0f2a44";
+                e.currentTarget.style.transform = "scale(1.02)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#1C4268";
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+            >
+              📞 Speak with an Expert: 9737388388
+            </a>
+          </div>
+        </>
+      );
+      setStep(STEPS.DONE);
+      setInputDisabled(false);
+      return;
+    } else {
+      await typeFor(700);
+      await botMsg(`Great choice, ${userData.name}! 💰`);
+      await typeFor(400);
+      await botMsg(
+        "To help you find the most relevant grant opportunities and provide personalized assistance, I'll just need your mobile number."
+      );
+      await typeFor(400);
+      await botMsg("📱 Please enter your 10-digit mobile number.");
+      setStep(STEPS.PHONE);
       setInputDisabled(false);
     }
   }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // 🔥 FIXED onPhoneSubmit - Uses REFS
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  async function onPhoneSubmit(phone) {
+    console.log("🔴🔴🔴🔴🔴 onPhoneSubmit WAS CALLED! 🔴🔴🔴🔴🔴");
+    console.log("📞 Phone parameter received:", phone);
+
+    if (!phone) {
+      console.log("⚠️ Phone is null or undefined");
+      return;
+    }
+
+    const cleanPhone = phone.toString().trim();
+    console.log("📞 Cleaned phone:", cleanPhone);
+
+    if (cleanPhone.length === 0) {
+      console.log("⚠️ Phone is empty after trimming");
+      return;
+    }
+
+    if (cleanPhone.length !== 10) {
+      console.log(`⚠️ Phone must be 10 digits, got ${cleanPhone.length} digits`);
+      return;
+    }
+
+    if (!/^\d{10}$/.test(cleanPhone)) {
+      console.log("⚠️ Phone contains non-numeric characters");
+      return;
+    }
+
+    console.log("✅ Phone is valid:", cleanPhone);
+
+    // 🔥 STEP 1: Update userData with phone (state)
+    setUserData((prev) => {
+      const updated = { ...prev, phone: cleanPhone };
+      console.log("📝 New userData (state):", updated);
+      return updated;
+    });
+
+    // 🔥 STEP 2: Update userDataRef with phone (ref)
+    userDataRef.current = { ...userDataRef.current, phone: cleanPhone };
+    console.log("📝 New userDataRef:", userDataRef.current);
+
+    // 🔥 STEP 3: Clear the input
+    setSelectVal("");
+
+    // 🔥 STEP 4: Show user message
+    userMsg(cleanPhone);
+
+    // 🔥 STEP 5: Set auto-save flag using REF
+    console.log("🚀 Setting shouldAutoSaveRef to true...");
+    shouldAutoSaveRef.current = true;
+
+    // 🔥 STEP 6: Start timer with a delay
+    console.log("⏱️ Starting timer with delay...");
+    setTimeout(() => {
+      console.log("⏱️ Timer starting now...");
+      startAutoSaveTimer();
+    }, 200);
+
+    // 🔥 STEP 7: Continue chat
+    await typeFor(400);
+    await botMsg(
+      "Perfect! Now let me ask you a few questions to find the best matches for you."
+    );
+    await typeFor(500);
+    await botMsg("What type of capital are you looking for?");
+    setStep(STEPS.CAPITAL);
+    setInputDisabled(false);
+  }
+
+  // ── REST OF THE FUNCTIONS (onCapital, onSector, etc.) ──
 
   async function onCapital(opt) {
     setInputDisabled(true);
     userMsg(opt.label);
     setFilters((f) => ({ ...f, fundingType: opt.value }));
+    setUserData((prev) => ({ ...prev, capital: opt.value }));
+    userDataRef.current = { ...userDataRef.current, capital: opt.value };
+
     await typeFor(600);
     await botMsg(
       "Which industry sector does your startup operate in? (Required — cannot be skipped)"
@@ -587,6 +894,8 @@ export default function FundingChatbot({ data = fundingData }) {
     setInputDisabled(true);
     userMsg(val);
     setFilters((f) => ({ ...f, sector: val }));
+    setUserData((prev) => ({ ...prev, sector: val }));
+    userDataRef.current = { ...userDataRef.current, sector: val };
     setSelectVal("");
     await typeFor(600);
     await botMsg("What is your legal entity type? (Optional — you can skip)");
@@ -599,6 +908,8 @@ export default function FundingChatbot({ data = fundingData }) {
     setInputDisabled(true);
     userMsg(skip ? "Skipped" : val);
     setFilters((f) => ({ ...f, entityType: skip ? "" : val }));
+    setUserData((prev) => ({ ...prev, entityType: skip ? "" : val }));
+    userDataRef.current = { ...userDataRef.current, entityType: skip ? "" : val };
     setSelectVal("");
     await typeFor(600);
     await botMsg(
@@ -611,10 +922,18 @@ export default function FundingChatbot({ data = fundingData }) {
   async function onAmount(opt, skip = false) {
     setInputDisabled(true);
     userMsg(skip ? "Any Amount" : opt.label);
+    const amountValue = skip ? null : opt.value;
     setFilters((f) => ({
       ...f,
-      amountRange: skip ? null : opt.value,
+      amountRange: amountValue,
     }));
+
+    if (!skip && amountValue) {
+      const amountLabel = `${amountValue.min}-${amountValue.max}`;
+      setUserData((prev) => ({ ...prev, amount: amountLabel }));
+      userDataRef.current = { ...userDataRef.current, amount: amountLabel };
+    }
+
     await typeFor(600);
     await botMsg(
       "Which state is your startup registered in? (Skip to show All India)"
@@ -628,7 +947,10 @@ export default function FundingChatbot({ data = fundingData }) {
     setInputDisabled(true);
     userMsg(skip ? "All India" : val);
     setFilters((f) => ({ ...f, state: skip ? "" : val }));
+    setUserData((prev) => ({ ...prev, state: skip ? "" : val }));
+    userDataRef.current = { ...userDataRef.current, state: skip ? "" : val };
     setSelectVal("");
+
     await typeFor(500);
     await botMsg("Are you DPIIT recognized? (Optional)");
     setStep(STEPS.DPIIT);
@@ -639,6 +961,8 @@ export default function FundingChatbot({ data = fundingData }) {
     setInputDisabled(true);
     userMsg(opt.label);
     setFilters((f) => ({ ...f, isDpiit: opt.value }));
+    setUserData((prev) => ({ ...prev, isDpiit: opt.value }));
+    userDataRef.current = { ...userDataRef.current, isDpiit: opt.value };
     await typeFor(500);
     await botMsg("Is your startup founded by a woman? (Optional)");
     setStep(STEPS.FEMALE);
@@ -648,13 +972,53 @@ export default function FundingChatbot({ data = fundingData }) {
   async function onFemale(opt) {
     setInputDisabled(true);
     userMsg(opt.label);
-    const final = { ...filters, isFemaleFounder: opt.value };
-    setFilters(final);
+    setFilters((f) => ({ ...f, isFemaleFounder: opt.value }));
+    setUserData((prev) => ({ ...prev, isFemaleFounder: opt.value }));
+    userDataRef.current = { ...userDataRef.current, isFemaleFounder: opt.value };
     await typeFor(500);
-    await botMsg("Perfect! Searching through all available schemes for you...");
+
+    await botMsg(
+      "Almost there! 📧 Please enter your email address to get personalized results."
+    );
+    setStep(STEPS.EMAIL);
+    setInputDisabled(false);
+  }
+
+  async function onEmailSubmit(email) {
+    console.log("📧📧📧 EMAIL SUBMITTED! 📧📧📧", email);
+
+    if (
+      !email.trim() ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+    ) {
+      console.log("⚠️ Invalid email:", email);
+      return;
+    }
+
+    setInputDisabled(true);
+    userMsg(email.trim());
+    setUserData((prev) => ({ ...prev, email: email.trim() }));
+    userDataRef.current = { ...userDataRef.current, email: email.trim() };
+    setSelectVal("");
+
+    console.log("⏹️ Cancelling auto-save timer");
+    cancelAutoSaveTimer();
+
+
+
+    const fullData = { ...userDataRef.current };
+
+    console.log("📤 Saving with 'Fully Interested'");
+    await saveToDatabase(fullData, "Fully Interested");
+
+    await typeFor(400);
+    await botMsg(
+      "Perfect! Searching through all available schemes for you..."
+    );
     setStep(STEPS.LOADING);
 
     setTimeout(async () => {
+      const final = { ...filters };
       const found = scoredFilter(data, final);
 
       if (found.length === 0) {
@@ -663,7 +1027,39 @@ export default function FundingChatbot({ data = fundingData }) {
         );
         await typeFor(400);
         await botMsg(
-          "Try selecting 'Any' for funding type or broadening your sector. Would you like to start a new search?"
+          <>
+            "Try selecting 'Any' for funding type or broadening your sector. Would you like to start a new search?"
+            <div style={{ marginTop: "16px" }}>
+              <a
+                href="tel:9737388388"
+                style={{
+                  display: "inline-block",
+                  padding: "4px 4px",
+                  borderRadius: 20,
+                  border: "none",
+                  background: "#1C4268",
+                  color: "white",
+                  fontSize: 13,
+                  fontWeight: 400,
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  textAlign: "center",
+                  textDecoration: "none",
+                  transition: "all 0.15s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#0f2a44";
+                  e.currentTarget.style.transform = "scale(1.02)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "#1C4268";
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+              >
+                📞 Speak with an Expert: 9737388388
+              </a>
+            </div>
+          </>
         );
         setStep(STEPS.DONE);
         setInputDisabled(false);
@@ -674,7 +1070,9 @@ export default function FundingChatbot({ data = fundingData }) {
       const extras = found.length - 5;
 
       await botMsg(
-        `🎉 Found ${found.length} matching opportunit${found.length === 1 ? "y" : "ies"} for you! Here are the top results:`
+        `🎉 Found ${found.length} matching opportunit${
+          found.length === 1 ? "y" : "ies"
+        } for you! Here are the top results:`
       );
       setMessages((p) => [
         ...p,
@@ -691,6 +1089,44 @@ export default function FundingChatbot({ data = fundingData }) {
         await botMsg(
           `There are ${extras} more opportunities! Would you like the full report sent to your email?`
         );
+
+        
+
+        await botMsg(
+          <>
+          <div style={{ marginTop: "16px" }}>
+            <a
+              href="tel:9737388388"
+              style={{
+                display: "inline-block",
+                padding: "4px 4px",
+                borderRadius: 20,
+                border: "none",
+                background: "#1C4268",
+                color: "white",
+                fontSize: 13,
+                fontWeight: 400,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                textAlign: "center",
+                textDecoration: "none",
+                transition: "all 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#0f2a44";
+                e.currentTarget.style.transform = "scale(1.02)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#1C4268";
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+            >
+              📞 Speak with an Expert: 9737388388
+            </a>
+          </div>
+        </>
+        );
+    await typeFor(500);
       } else {
         await botMsg(
           "Would you like a detailed report with application guidance for all these schemes?"
@@ -705,6 +1141,7 @@ export default function FundingChatbot({ data = fundingData }) {
   async function onResults(opt) {
     setInputDisabled(true);
     userMsg(opt.label);
+
     if (opt.value === "restart") {
       resetAll();
       return;
@@ -727,25 +1164,47 @@ export default function FundingChatbot({ data = fundingData }) {
     if (!leadForm.name.trim() || !leadForm.email.trim()) return;
     setInputDisabled(true);
     userMsg(
-      `${leadForm.name} · ${leadForm.email}${leadForm.phone ? ` · ${leadForm.phone}` : ""}`
+      `${leadForm.name} · ${leadForm.email}${
+        leadForm.phone ? ` · ${leadForm.phone}` : ""
+      }`
     );
     await typeFor(400);
 
+    if (isApiHit.current) {
+      await botMsg(
+        "✅ We already have your details! Our team will reach out to you shortly. 🚀"
+      );
+      setStep(STEPS.DONE);
+      setInputDisabled(false);
+      return;
+    }
+
     const payload = {
-      name: leadForm.name.trim(),
+      name: leadForm.name.trim() || userDataRef.current.name,
+      phone: leadForm.phone.trim() || userDataRef.current.phone,
+      state: filters.state || userDataRef.current.state || "Not specified",
+      platform: "website chatbot",
+      ad_name: filters.fundingType || userDataRef.current.capital || "Not specified",
+      external_lead_id:
+        userDataRef.current.amount ||
+        (filters.amountRange
+          ? `${filters.amountRange.min}-${filters.amountRange.max}`
+          : "Not specified"),
       email: leadForm.email.trim(),
-      phone: leadForm.phone ? leadForm.phone.trim() : "",
-      state: filters.state || "Not specified",
-      fundingType: filters.fundingType,
-      sector: filters.sector,
-      entityType: filters.entityType,
-      amountRange: filters.amountRange,
-      isDpiit: filters.isDpiit,
-      isFemaleFounder: filters.isFemaleFounder,
+      sector: filters.sector || userDataRef.current.sector || "",
+      entityType: filters.entityType || userDataRef.current.entityType || "",
+      isDpiit: filters.isDpiit || userDataRef.current.isDpiit || false,
+      isFemaleFounder:
+        filters.isFemaleFounder || userDataRef.current.isFemaleFounder || false,
+      campaign_name: "Fully Interested",
+      completed: true,
+      recaptchaToken: "final_submission_no_captcha",
     };
 
+    console.log("📤 Final lead submission:", payload);
+
     try {
-      const response = await fetch("/api/submit-lead", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -754,14 +1213,19 @@ export default function FundingChatbot({ data = fundingData }) {
       const result = await response.json();
 
       if (response.ok) {
-        console.log("✅ Lead submitted successfully:", result.data);
+        console.log("✅ Lead submitted successfully:", result);
+        isApiHit.current = true;
+        shouldAutoSaveRef.current = false;
+        cancelAutoSaveTimer();
         await botMsg(
           "✅ Thank you! Your full funding report is being prepared and will be sent to your email shortly. Our advisor will reach out to guide you through the application process. 🚀"
         );
       } else {
         console.error("❌ Failed to submit lead:", result.error);
         await botMsg(
-          "⚠️ There was an issue submitting your details. Please try again or contact us directly."
+          `⚠️ There was an issue submitting your details: ${
+            result.error || "Please try again or contact us directly."
+          }`
         );
       }
     } catch (error) {
@@ -817,7 +1281,171 @@ export default function FundingChatbot({ data = fundingData }) {
   };
 
   function renderInput() {
+    console.log("🔍 renderInput called - Current step:", step);
+
     switch (step) {
+      case STEPS.ASK_NAME:
+        return (
+          <div style={{ display: "flex", gap: 8 }}>
+            <input
+              type="text"
+              placeholder="Enter your name..."
+              style={{ ...inputField, flex: 1 }}
+              value={selectVal}
+              onChange={(e) => setSelectVal(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === "Enter" && selectVal.trim()) {
+                  onNameSubmit(selectVal);
+                }
+              }}
+              disabled={inputDisabled}
+              autoFocus
+            />
+            <button
+              onClick={() => onNameSubmit(selectVal)}
+              disabled={inputDisabled || !selectVal.trim()}
+              style={{
+                background: "#1C4268",
+                color: "white",
+                border: "none",
+                borderRadius: 10,
+                padding: "9px 16px",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor:
+                  inputDisabled || !selectVal.trim() ? "default" : "pointer",
+                fontFamily: "inherit",
+                opacity: inputDisabled || !selectVal.trim() ? 0.5 : 1,
+              }}
+            >
+              Send →
+            </button>
+          </div>
+        );
+
+      case STEPS.PHONE:
+        console.log("📱 PHONE STEP RENDERED - Current selectVal:", selectVal);
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ display: "flex", gap: 8 }}>
+              <input
+                type="tel"
+                placeholder="Enter 10-digit mobile number..."
+                style={{ ...inputField, flex: 1 }}
+                value={selectVal}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, "");
+                  console.log("📝 Phone input changed:", val, "Length:", val.length);
+                  setSelectVal(val);
+                }}
+                onKeyDown={(e) => {
+                  console.log(
+                    "⌨️ Key down:",
+                    e.key,
+                    "Current value:",
+                    selectVal,
+                    "Length:",
+                    selectVal.length
+                  );
+                  if (e.key === "Enter" && selectVal.length === 10) {
+                    console.log("✅ Enter pressed - calling onPhoneSubmit");
+                    e.preventDefault();
+                    onPhoneSubmit(selectVal);
+                  }
+                }}
+                disabled={inputDisabled}
+                maxLength={10}
+                autoFocus
+              />
+              <button
+                onClick={() => {
+                  console.log(
+                    "🖱️ Submit button clicked - selectVal:",
+                    selectVal,
+                    "Length:",
+                    selectVal.length
+                  );
+                  if (selectVal.length === 10) {
+                    console.log("✅ Calling onPhoneSubmit with:", selectVal);
+                    onPhoneSubmit(selectVal);
+                  } else {
+                    console.log("⚠️ Invalid length:", selectVal.length);
+                  }
+                }}
+                disabled={inputDisabled || selectVal.length !== 10}
+                style={{
+                  background: selectVal.length === 10 ? "#1C4268" : "#94a3b8",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "9px 16px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor:
+                    inputDisabled || selectVal.length !== 10
+                      ? "default"
+                      : "pointer",
+                  fontFamily: "inherit",
+                  opacity: inputDisabled || selectVal.length !== 10 ? 0.5 : 1,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Submit →
+              </button>
+            </div>
+            {selectVal.length > 0 && selectVal.length < 10 && (
+              <div style={{ fontSize: 11, color: "#f59e0b" }}>
+                ⚠️ {10 - selectVal.length} more digit
+                {10 - selectVal.length > 1 ? "s" : ""} needed
+              </div>
+            )}
+            {selectVal.length === 10 && (
+              <div style={{ fontSize: 11, color: "#10b981" }}>
+                ✅ Valid! Click Submit or press Enter
+              </div>
+            )}
+          </div>
+        );
+
+      case STEPS.EMAIL:
+        return (
+          <div style={{ display: "flex", gap: 8 }}>
+            <input
+              type="email"
+              placeholder="Enter your email address..."
+              style={{ ...inputField, flex: 1 }}
+              value={selectVal}
+              onChange={(e) => setSelectVal(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === "Enter" && selectVal.trim()) {
+                  onEmailSubmit(selectVal);
+                }
+              }}
+              disabled={inputDisabled}
+              autoFocus
+            />
+            <button
+              onClick={() => onEmailSubmit(selectVal)}
+              disabled={inputDisabled || !selectVal.trim()}
+              style={{
+                background: "#1C4268",
+                color: "white",
+                border: "none",
+                borderRadius: 10,
+                padding: "9px 16px",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor:
+                  inputDisabled || !selectVal.trim() ? "default" : "pointer",
+                fontFamily: "inherit",
+                opacity: inputDisabled || !selectVal.trim() ? 0.5 : 1,
+              }}
+            >
+              Submit →
+            </button>
+          </div>
+        );
+
       case STEPS.CONFIRM:
         return (
           <OptionBtns
@@ -855,6 +1483,7 @@ export default function FundingChatbot({ data = fundingData }) {
               setSelectVal(e.target.value);
               if (e.target.value) onSector(e.target.value);
             }}
+            autoFocus
           >
             <option value="">Select your sector...</option>
             {options.sectors.map((s) => (
@@ -876,6 +1505,7 @@ export default function FundingChatbot({ data = fundingData }) {
                 setSelectVal(e.target.value);
                 if (e.target.value) onEntity(e.target.value);
               }}
+              autoFocus
             >
               <option value="">Select entity type...</option>
               {options.entities.map((e) => (
@@ -899,7 +1529,7 @@ export default function FundingChatbot({ data = fundingData }) {
           <div>
             <OptionBtns
               options={AMOUNT_RANGES.filter(
-                (r) => r.label !== "Any Amount",
+                (r) => r.label !== "Any Amount"
               ).map((r) => ({
                 label: r.label,
                 value: r.value,
@@ -928,6 +1558,7 @@ export default function FundingChatbot({ data = fundingData }) {
                 setSelectVal(e.target.value);
                 if (e.target.value) onState(e.target.value);
               }}
+              autoFocus
             >
               <option value="">Select your state...</option>
               {options.states.map((s) => (
@@ -996,6 +1627,7 @@ export default function FundingChatbot({ data = fundingData }) {
               onChange={(e) =>
                 setLeadForm((f) => ({ ...f, name: e.target.value }))
               }
+              autoFocus
             />
             <input
               type="email"
@@ -1037,7 +1669,14 @@ export default function FundingChatbot({ data = fundingData }) {
 
       case STEPS.DONE:
         return (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 4 }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+              paddingTop: 4,
+            }}
+          >
             <button
               onClick={resetAll}
               style={{
@@ -1063,7 +1702,6 @@ export default function FundingChatbot({ data = fundingData }) {
             >
               Start new search
             </button>
-         
           </div>
         );
 
@@ -1086,12 +1724,12 @@ export default function FundingChatbot({ data = fundingData }) {
       `}</style>
 
       {showContactUs && (
-        <ContactUs 
-          scheme={selectedScheme} 
+        <ContactUs
+          scheme={selectedScheme}
           onClose={() => {
             setShowContactUs(false);
             setSelectedScheme(null);
-          }} 
+          }}
         />
       )}
 
@@ -1149,7 +1787,7 @@ export default function FundingChatbot({ data = fundingData }) {
                   lineHeight: 1.2,
                 }}
               >
-                FundBot
+                UdyamMitra
               </div>
               <div style={{ color: "rgba(255,255,255,.65)", fontSize: 11.5 }}>
                 Funding Opportunity Finder
@@ -1192,9 +1830,9 @@ export default function FundingChatbot({ data = fundingData }) {
                 return (
                   <div key={msg.id} style={{ width: "100%" }}>
                     {msg.items.map((item) => (
-                      <ResultCard 
-                        key={item.id} 
-                        item={item} 
+                      <ResultCard
+                        key={item.id}
+                        item={item}
                         onUnlockClick={handleUnlockClick}
                       />
                     ))}
